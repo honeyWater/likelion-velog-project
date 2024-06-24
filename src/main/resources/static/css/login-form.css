@@ -1,0 +1,168 @@
+.form_layout {
+    z-index: 10;
+    position: fixed;
+    width: 100vw;
+    height: 100svh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form_group span {
+    color: red;
+}
+
+.form_group #email_label {
+    color: red;
+}
+
+.form_group #password_label {
+    color: red;
+}
+
+.form_wrapper {
+    display: flex;
+    width: 700px !important;
+    height: 600px !important;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .09);
+}
+
+.form_grayBlock {
+    width: 216px;
+    background: #F8F9FA;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.welcome_comment {
+    font-size: 28px;
+    margin-top: 24px;
+    color: #495057;
+    text-align: center;
+    font-weight: 600;
+}
+
+.form_whiteBlock {
+    flex: 1 1;
+    background: #FFFFFF;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.exit {
+    display: flex;
+    justify-content: flex-end;
+    font-size: 24px;
+    color: #868E96;
+    margin-bottom: 36px;
+}
+
+.form_content_wrapper {
+    flex: 1 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form_content_block {
+    display: flex;
+    flex: 1 1;
+    flex-direction: column;
+    justify-content: space-between;
+    line-height: 1.5;
+}
+
+.form_content_block h2 {
+    font-size: 1.3125rem;
+    color: #212529;
+}
+
+.form_content_block h2, .form_content_block h4 {
+    margin: 0;
+}
+
+.form_content_block h4 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    color: #868EB1;
+}
+
+.email_form {
+    width: 100%;
+    /*display: flex;*/
+    /*height: 3rem;*/
+}
+/* 챗지피티 */
+.form_group label {
+    display: block;
+    color: #495057;
+    font-weight: 500;
+}
+
+.form_group input {
+    width: 93%;
+    padding: .75rem;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    margin-bottom: .5rem;
+    font-size: 1rem;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form_group input:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25);
+}
+
+button {
+    width: 100%;
+    padding: .75rem;
+    border: none;
+    border-radius: .25rem;
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #12B886;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+button:hover {
+    background-color: #20C997;
+    text-decoration: none; /* 호버 시 밑줄 제거 */
+}
+/* 챗지피티 */
+
+.form_content_foot {
+    text-align: right;
+    color: #8DB896;
+    margin-top: 1rem;
+}
+
+.form_content_foot span {
+    margin-right: .25rem;
+    display: inline;
+}
+
+.form_content_foot a {
+    display: inline-block;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none; /* a 태그의 기본 밑줄 스타일 제거 */
+}

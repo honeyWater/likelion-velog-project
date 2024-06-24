@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" th:href="@{/css/velog-main.css}"/>
+  <link rel="stylesheet" th:href="@{/css/menu.css}"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="/js/menu.js"></script>
+</head>
+<body>
+<div class="responsive_main">
+  <div class="HomeLayout_innerBlock">
+    <header>
+      <div class="HeaderLogo_Block">
+        <!-- 개인 페이지 헤더 로고 필요 -->
+      </div>
+      <div class="Header_right">
+        <div th:if="${signedIn == null}">
+          <!-- 로그인 상태가 아닐 때 -->
+          <!-- 알림, 검색 -->
+          <a th:href="@{/loginform}">
+            <button class="RoundButton_block">로그인</button>
+          </a>
+        </div>
+        <div th:if="${signedIn != null}">
+          <!-- 로그인 상태일 때 -->
+          <!-- 알림, 검색, 새 글 작성 -->
+          <div class="toggle-menu">
+            <button class="toggle-button">메뉴 토글</button>
+            <ul id="menu-items" class="menu-items">
+              <li><a href="#">내 벨로그</a></li>
+              <li><a href="#">새 글 작성</a></li>
+              <li><a href="#">임시 글</a></li>
+              <li><a href="#">읽기 목록</a></li>
+              <li><a href="#">설정</a></li>
+              <li><form action="/logout" method="post"><button type="submit">로그아웃</button></form></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+
+    </main>
+  </div>
+</div>
+</body>
+</html>
