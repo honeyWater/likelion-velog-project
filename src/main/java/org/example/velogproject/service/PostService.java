@@ -63,8 +63,8 @@ public class PostService {
     // 일간 트렌딩 조회
     @Transactional(readOnly = true)
     public List<PostCardDto> getDailyTrendingPosts() {
-        LocalDateTime oneDayAgo = LocalDateTime.now().minusDays(1);
-        List<Post> posts = postRepository.findDailyTrendingPosts(oneDayAgo);
+        LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);
+        List<Post> posts = postRepository.findDailyTrendingPosts(twoDaysAgo);
         return doTrending(posts);
     }
 

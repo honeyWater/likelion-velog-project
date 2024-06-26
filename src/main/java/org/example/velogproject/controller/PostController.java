@@ -19,70 +19,42 @@ public class PostController {
     private final UserService userService;
     private final PostService postService;
 
-    // 메인 페이지 - 월간 트렌딩
-    @GetMapping(value = {"/", "/trending/month"})
-    public String getHomePageAndMonthlyTrending(Model model) {
-        List<PostCardDto> monthlyTrendingPosts = postService.getMonthlyTrendingPosts();
+    // 기간(period)에 따른 트렌딩 처리
+    @GetMapping(value = {"/", "/trending/{period}"})
+    public String getHomePageAndTrending(@PathVariable(required = false) String period, Model model) {
+        if (period == null) {
+            period = "month"; // 기본값은 월간으로
+        }
+
+        List<PostCardDto> trendingPosts;
+        String trendingPeriod;
+
+        switch (period) {
+            case "day":
+                trendingPosts = postService.getDailyTrendingPosts();
+                trendingPeriod = "오늘";
+                break;
+            case "week":
+                trendingPosts = postService.getWeeklyTrendingPosts();
+                trendingPeriod = "이번 주";
+                break;
+            case "year":
+                trendingPosts = postService.getYearlyTrendingPosts();
+                trendingPeriod = "올해";
+                break;
+            default: // "month" 또는 기타 경우
+                trendingPosts = postService.getMonthlyTrendingPosts();
+                trendingPeriod = "이번 달";
+                break;
+        }
 
         String userId = UserContext.getUser();
-        if (userId != null) {
+        if(userId != null) {
             model.addAttribute("signedIn", userId);
         }
 
-        model.addAttribute("posts", monthlyTrendingPosts);
-        model.addAttribute("trending", "trending");
-        model.addAttribute("trendingMonth", "trendingMonth");
-
-        return "main";
-    }
-
-    // 메인 페이지 - 주간 트렌딩
-    @GetMapping("/trending/week")
-    public String getHomePageAndWeeklyTrending(Model model) {
-        List<PostCardDto> weeklyTrendingPosts = postService.getWeeklyTrendingPosts();
-
-        String userId = UserContext.getUser();
-        if (userId != null) {
-            model.addAttribute("signedIn", userId);
-        }
-
-        model.addAttribute("posts", weeklyTrendingPosts);
-        model.addAttribute("trending", "trending");
-        model.addAttribute("trendingMonth", "trendingMonth");
-
-        return "main";
-    }
-
-    // 메인 페이지 - 일간 트렌딩
-    @GetMapping("/trending/day")
-    public String getHomePageAndDailyTrending(Model model) {
-        List<PostCardDto> dailyTrendingPosts = postService.getDailyTrendingPosts();
-
-        String userId = UserContext.getUser();
-        if (userId != null) {
-            model.addAttribute("signedIn", userId);
-        }
-
-        model.addAttribute("posts", dailyTrendingPosts);
-        model.addAttribute("trending", "trending");
-        model.addAttribute("trendingDay", "trendingDay");
-
-        return "main";
-    }
-
-    // 메인 페이지 - 연간 트렌딩
-    @GetMapping("/trending/year")
-    public String getHomePageAndYearlyTrending(Model model) {
-        List<PostCardDto> yearlyTrendingPosts = postService.getYearlyTrendingPosts();
-
-        String userId = UserContext.getUser();
-        if (userId != null) {
-            model.addAttribute("signedIn", userId);
-        }
-
-        model.addAttribute("posts", yearlyTrendingPosts);
-        model.addAttribute("trending", "trending");
-        model.addAttribute("trendingYear", "trendingYear");
+        model.addAttribute("posts", trendingPosts);
+        model.addAttribute("trendingPeriod", trendingPeriod);
 
         return "main";
     }
@@ -104,7 +76,6 @@ public class PostController {
     }
 
     // 메인 페이지 - 피드
-
 
 
     // 사용자 개인 블로그

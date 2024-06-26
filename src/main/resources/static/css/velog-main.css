@@ -23,7 +23,7 @@
 }
 
 .HeaderLogo_Block .velogLogo {
-    height: 24px;
+    height: 30px;
 }
 
 .Header_right * {
@@ -46,15 +46,13 @@
     color: #212529;
     border: 1px solid;
     border-radius: 1rem;
-    /*padding: 8px 16px;*/
+    padding: 0.2rem 1rem;
     cursor: pointer;
     font-weight: 700;
     margin-right: 20px;
     margin-left: 8px;
-    height: 2rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    font-size: 1rem;
+    height: auto;
+    font-size: 1.1rem;
     text-decoration: none;
 }
 
@@ -117,9 +115,14 @@ a {
     position: relative;
 }
 
+.HomeTab_tab a {
+    font-size: 1.3rem;
+}
+
 .HomeTab_tab a svg {
-    font-size: 24px;
+    font-size: 30px;
     margin-left: 8px;
+    margin-right: 0.4rem;
 }
 
 .HomeTab_tab a+a {
@@ -152,7 +155,7 @@ a {
 .HomeTab_active::after {
     content: '';
     position: absolute;
-    bottom: 0;
+    bottom: -6px;
     left: 0;
     width: 100%;
     height: 2px; /* 하단 바의 두께 */
@@ -166,8 +169,9 @@ a {
 
 .HomeTab_selector {
     background: #FFFFFF;
-    height: 32px;
-    width: 100px;
+    height: 34px;
+    width: 92px;
+    border: 1px solid #e0e0e0; /* 테두리 추가 */
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -177,14 +181,23 @@ a {
     margin-right: 10px;
     font-weight: 600;
     color: #49509D;
-    font-size: 14px;
+    font-size: 1rem;
     box-shadow: 0 0 4px rgba(0, 0, 0, .05);
     cursor: pointer;
 }
 
 .HomeTab_selector svg {
+    display: inline-block;
+    vertical-align: middle;
     width: 24px;
     height: 24px;
+}
+
+.HomeTab_right_dot {
+    margin-top: 5px;
+    cursor: pointer;
+    font-size: 24px;
+    color: #868E96;
 }
 
 .TimeframePicker_aligner {
@@ -197,9 +210,12 @@ a {
 
 .TimeframePicker_block {
     margin-top: 8px;
-    width: 192px;
-    box-shadow: 0 0 8px 0 rgba(0, 0, 0, .1);
+    width: 200px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .1);
     background: #FFF;
+    border-radius: 4px; /* 모서리 둥글게 */
+    border: 1px solid #e0e0e0; /* 테두리 추가 */
+    overflow: hidden; /* 내부 요소가 둥근 모서리를 벗어나지 않도록 */
 }
 
 .TimeframePicker_block ul {
@@ -214,12 +230,181 @@ a {
 
 .TimeframePicker_block li a {
     display: block;
-    padding: .75rem 1rem;
+    padding: 10px 12px; /* 패딩 조정 */
     text-decoration: none;
-    background: #FFF;
+    /*background: #FFF;*/
     color: #212529;
     width: 100%;
     height: 100%;
     font-weight: 600;
+    font-size: 16px; /* 글꼴 크기 조정 */
+}
+
+.TimeframePicker_block li a:hover,
+.TimeframePicker_block li a.active {
+    background-color: #e6f3e6; /* 선택된 항목 배경색 */
+    color: #2ecc71; /* 선택된 항목 텍스트 색상 */
+}
+
+.HomeLayout_main {
+    width: 100%;
+    margin-top: 32px;
+    margin-bottom: 16px;
+}
+
+.HomeLayout_main main {
+    width: 100%;
+}
+
+main {
+    display: block;
+    unicode-bidi: isolate;
+}
+
+.PostCardGrid_block {
+    background-color: #F8F9FA;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.grid_homeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-gap: 2rem;
+    padding: 0;
+    margin: 0;
+}
+
+ul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    padding-inline-start: 0;
+    unicode-bidi: isolate;
+}
+
+.PostCard_block {
+    display: flex;
+    flex-flow: column;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, .04);
+    transition: box-shadow .3s ease-in, transform .3s ease-in;
+    overflow: hidden;
+}
+
+.PostCard_block:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, .15);
+}
+
+.PostCard_styleLink {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.RatioImage_block {
+    padding-top: 52.19%;
+    width: 100%;
+    position: relative;
+}
+
+.RatioImage_block img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.PostCard_content {
+    padding: 1.5rem;
+    flex-grow: 1;
+}
+
+.PostCard_h4 {
+    font-size: 1rem;
+    margin: 0 0 .25rem;
+    line-height: 1.5;
+    word-break: break-word;
+    color: #212529;
+}
+
+.PostCard_descriptionWrapper {
+    flex: 1 1;
+}
+
+.PostCard_clamp {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orientation: vertical;
+    overflow: hidden;
+}
+
+.PostCard_clamp p {
+    word-break: break-word;
+    word-wrap: break-word;
     font-size: .875rem;
+    line-height: 1.5;
+    color: #495057;
+    margin: 0 0 1.5rem;
+}
+
+.PostCard_subInfo {
+    margin-top: auto;
+    font-size: .75rem;
+    line-height: 1.5;
+    color: #868E96;
+}
+
+.PostCard_separator:before {
+    content: "\00B7";
+    margin: 0 0.25rem;
+}
+
+.PostCard_footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #F1F3F5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.PostCard_userInfo {
+    display: flex;
+    align-items: center;
+}
+
+.PostCard_userInfo img {
+    object-fit: cover;
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: block;
+    margin-right: .5rem;
+}
+
+.PostCard_userInfo span {
+    color: #868E96;
+}
+
+.PostCard_likes {
+    display: flex;
+    align-items: center;
+    color: #212529;
+    font-size: 0.9rem;
+}
+
+.PostCard_likes svg {
+    margin-right: 0.25rem;
 }

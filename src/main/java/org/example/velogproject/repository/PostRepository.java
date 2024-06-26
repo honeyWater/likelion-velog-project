@@ -32,11 +32,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("""
             select p
             from Post p
-            where p.createdAt >= :oneDayAgo
+            where p.createdAt >= :twoDaysAgo
             and p.inPrivate = false
             and p.publishStatus = true
             """)
-    List<Post> findDailyTrendingPosts(@Param("oneDayAgo") LocalDateTime oneDayAgo);
+    List<Post> findDailyTrendingPosts(@Param("twoDaysAgo") LocalDateTime twoDaysAgo);
 
     @Query("""
             select p

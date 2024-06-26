@@ -6,8 +6,7 @@
   <link rel="stylesheet" th:href="@{/css/velog-main.css}"/>
   <link rel="stylesheet" th:href="@{/css/menu.css}"/>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="/js/menu.js"></script>
-  <script src="/js/trending-selector.js"></script>
+  <script src="/js/main.js"></script>
 </head>
 <body>
 <div class="responsive_main">
@@ -64,7 +63,7 @@
     <div class="HomeTab_wrapper">
       <nav class="HomeTab_left">
         <div class="HomeTab_tab">
-          <a href="/trending/month" th:class="${trending} ? 'HomeTab_active' : 'HomeTab_non_active'">
+          <a href="/trending/month" th:class="${trendingPeriod} ? 'HomeTab_active' : 'HomeTab_non_active'">
             <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em"
                  xmlns="http://www.w3.org/2000/svg">
               <path fill="none" d="M0 0h24v24H0z"></path>
@@ -95,14 +94,15 @@
         </div>
       </nav>
       <div class="HomeTab_right">
-        <div class="HomeTab_selector">
+        <div class="HomeTab_selector" th:if="${trendingPeriod != null}">
+          <span class="selector-text" th:text="${trendingPeriod}"></span>
           <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em"
                xmlns="http://www.w3.org/2000/svg">
             <path fill="none" d="M0 0h24v24H0z"></path>
             <path d="M7 10l5 5 5-5z"></path>
           </svg>
         </div>
-        <div class="TimeframePicker_aligner">
+        <div class="TimeframePicker_aligner" th:if="${trendingPeriod != null}">
           <div class="TimeframePicker_block">
             <ul>
               <li><a th:href="@{/trending/day}">오늘</a></li>
@@ -112,20 +112,22 @@
             </ul>
           </div>
         </div>
-        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" class="HomeTab_extra__x0Vmq"
-             height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-          <path fill="none" d="M0 0h24v24H0z"></path>
-          <path
-              d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
-        </svg>
+        <div class="HomeTab_right_dot">
+          <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24"
+               class="HomeTab_extra__x0Vmq"
+               height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+            <path fill="none" d="M0 0h24v24H0z"></path>
+            <path
+                d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path>
+          </svg>
+        </div>
       </div>
     </div>
 
-    <!-- ###################################################### -->
     <div class="HomeLayout_main">
       <main>
-        <ul class="PostCardGrid_block" th:each="post : ${posts}">
-          <li class="PostCard_block">
+        <ul class="PostCardGrid_block grid_homeGrid">
+          <li class="PostCard_block" th:each="post : ${posts}">
             <a th:if="${post.thumbnailImage}" class="PostCard_styleLink">
               <div class="RatioImage_block">
                 <img alt="" src="">
