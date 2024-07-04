@@ -5,7 +5,6 @@ import org.example.velogproject.domain.Post;
 import org.example.velogproject.dto.PostCardDto;
 import org.example.velogproject.service.PostService;
 import org.example.velogproject.service.UserService;
-import org.example.velogproject.util.UserContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,10 +47,8 @@ public class PostController {
                 break;
         }
 
-        String userId = UserContext.getUser();
-        if(userId != null) {
-            model.addAttribute("signedIn", userId);
-        }
+        // 로그인 상태를 확인하는 코드 필요
+//        model.addAttribute("signedIn", userId);
 
         model.addAttribute("posts", trendingPosts);
         model.addAttribute("trendingPeriod", trendingPeriod);
@@ -64,10 +61,8 @@ public class PostController {
     public String getHomePageAndRecentlyPosted(Model model) {
         List<PostCardDto> recentPosts = postService.getRecentPosts();
 
-        String userId = UserContext.getUser();
-        if (userId != null) {
-            model.addAttribute("signedIn", userId);
-        }
+        // 로그인 상태를 확인하는 코드 필요
+//        model.addAttribute("signedIn", userId);
 
         model.addAttribute("posts", recentPosts);
         model.addAttribute("recent", "recent");

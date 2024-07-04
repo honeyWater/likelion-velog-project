@@ -6,7 +6,6 @@ import org.example.velogproject.domain.User;
 import org.example.velogproject.dto.UserRegisterDto;
 import org.example.velogproject.repository.RoleRepository;
 import org.example.velogproject.repository.UserRepository;
-import org.example.velogproject.util.UserContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
@@ -26,7 +25,7 @@ public class UserService {
     // 특정 이름의 사용자가 존재하는지 카운트
     @Transactional(readOnly = true)
     public boolean getCountByName(String name) {
-        return userRepository.existsByName(name);
+        return userRepository.existsByUsername(name);
     }
 
     // 특정 이메일의 사용자가 존재하는지 카운트
@@ -91,8 +90,4 @@ public class UserService {
         }
     }
 
-    // 사용자의 쿠키 확인
-    public String checkUserContext(){
-        return UserContext.getUser();
-    }
 }

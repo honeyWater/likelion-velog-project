@@ -11,7 +11,7 @@ import org.example.velogproject.domain.User;
 @NoArgsConstructor
 public class UserRegisterDto {
     @NotBlank(message = "이름은 필수 입력 값입니다.")
-    private String name;
+    private String username;
 
     @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
     @NotBlank(message = "이메일은 필수 입력 값입니다.")
@@ -32,8 +32,8 @@ public class UserRegisterDto {
     private String profileImage = "D:/사용자/msi/Desktop/멋쟁이 사자처럼/velog 프로젝트/image/default.jpg";
 
     @Builder
-    public UserRegisterDto(String name, String email, String password, String domain, String velogName, String info, String subInfo) {
-        this.name = name;
+    public UserRegisterDto(String username, String email, String password, String domain, String velogName, String info, String subInfo) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.domain = domain;
@@ -43,7 +43,7 @@ public class UserRegisterDto {
 
     public User toEntity() {
         return User.builder()
-                .name(name)
+                .username(username)
                 .email(email)
                 .password(password)
                 .domain(domain)

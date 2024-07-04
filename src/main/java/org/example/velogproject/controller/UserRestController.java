@@ -18,12 +18,8 @@ public class UserRestController {
     @GetMapping("/users/check-name")
     @ResponseBody
     public ResponseEntity<Boolean> checkName(@RequestParam String name) {
-        boolean result = true;
-
-        if (userService.getCountByName(name)) {
-            result = false; // 이름이 존재하면 사용할 수 없음
-        }
-
+        // 이름이 존재하면 사용할 수 없음
+        boolean result = !userService.getCountByName(name);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -31,12 +27,8 @@ public class UserRestController {
     @GetMapping("/users/check-email")
     @ResponseBody
     public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
-        boolean result = true;
-
-        if (userService.getCountByEmail(email)) {
-            result = false; // 이메일이 존재하면 사용할 수 없음
-        }
-
+        // 이메일이 존재하면 사용할 수 없음
+        boolean result = !userService.getCountByEmail(email);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -44,12 +36,8 @@ public class UserRestController {
     @GetMapping("/users/check-domain")
     @ResponseBody
     public ResponseEntity<Boolean> checkDomain(@RequestParam String domain) {
-        boolean result = true;
-
-        if (userService.getCountByDomain(domain)) {
-            result = false; // 도메인이 존재하면 사용할 수 없음
-        }
-
+        // 도메인이 존재하면 사용할 수 없음
+        boolean result = !userService.getCountByDomain(domain);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

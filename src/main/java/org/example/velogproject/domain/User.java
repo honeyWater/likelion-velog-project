@@ -20,8 +20,8 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "username", nullable = false)
+    private String username;
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
@@ -44,6 +44,12 @@ public class User {
     @Column(name = "registration_date")
     @CreationTimestamp
     private LocalDateTime registrationDate;
+
+    @Column(name = "social_id")
+    private String socialId;
+
+    @Column(name = "provider")
+    private String provider;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
@@ -76,4 +82,8 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
+
+    // 여러 디바이스에서 접속한다고 가정하면 1:N
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RefreshToken> refreshTokens;
 }

@@ -13,8 +13,8 @@ public class CheckNameValidator extends AbstractValidator<UserRegisterDto> {
 
     @Override
     protected void doValidate(UserRegisterDto dto, Errors errors) {
-        if (userRepository.existsByName(dto.toEntity().getName())) {
-            errors.rejectValue("name", "이름 중복 오류", "이미 사용중인 이름 입니다.");
+        if (userRepository.existsByUsername(dto.toEntity().getUsername())) {
+            errors.rejectValue("username", "이름 중복 오류", "이미 사용중인 이름 입니다.");
         }
     }
 }
