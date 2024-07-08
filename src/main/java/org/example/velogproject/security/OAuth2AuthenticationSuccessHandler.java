@@ -1,33 +1,33 @@
 package org.example.velogproject.security;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.velogproject.domain.Role;
 import org.example.velogproject.domain.SocialLoginInfo;
 import org.example.velogproject.domain.User;
+import org.example.velogproject.jwt.util.JwtTokenizer;
+import org.example.velogproject.service.RefreshTokenService;
 import org.example.velogproject.service.SocialLoginInfoService;
 import org.example.velogproject.service.UserService;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private final SocialLoginInfoService socialLoginInfoService;
     private final UserService userService;
+    private final JwtTokenizer jwtTokenizer;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -42,8 +42,6 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             return;
         }
 
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        DefaultOAuth2User defaultOAuth2User = (DefaultOAuth2User) auth.getPrincipal();
         OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
         Map<String, Object> attributes = oauth2User.getAttributes();
 
@@ -55,15 +53,12 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         Optional<User> userOptional = userService.findByProviderAndSocialId(provider, String.valueOf(socialId));
         if (userOptional.isPresent()) { // 회원 정보가 있으면 로그인 처리
             User user = userOptional.get();
+            List<String> roles = user.getRoles().stream().map(Role::getName).toList();
 
-            // oauth2 사용자 인증 성공 후 로그인 시 jwt 토큰 발급 로직을 수행
+            // 토큰 발급 및 쿠키 설정
+            jwtTokenizer.issueTokenAndSetCookies(response, user, roles);
+
             // 이후 "/"로 redirect 되도록 해야함
-            Cookie cookie = new Cookie("login", user.getId().toString());
-            cookie.setMaxAge(30 * 60); // 30분
-            cookie.setPath("/"); // 쿠키가 사이트의 모든 경로에 대해 유효하다.
-            cookie.setHttpOnly(true); // 자바스크립트에서 접근 불가
-
-            response.addCookie(cookie);
             response.sendRedirect("/");
 
         } else { // 소셜로 아직 회원가입이 안되었을 때,

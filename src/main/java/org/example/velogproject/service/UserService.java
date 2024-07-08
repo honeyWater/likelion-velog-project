@@ -43,13 +43,19 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    // id로 User 찾기
+    @Transactional(readOnly = true)
+    public Optional<User> getUserById(Long id){
+        return userRepository.findById(id);
+    }
+
     // 이메일로 User 찾기
     @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    // id로 User 찾기
+    // id로 User 유무 찾기
     @Transactional(readOnly = true)
     public String getUserIdById(Long id) {
         if (userRepository.existsById(id)) {

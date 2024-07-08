@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class UserRestController {
+public class UserApiController {
     private final UserService userService;
 
     // name 중복 확인

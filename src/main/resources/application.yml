@@ -1,39 +1,43 @@
 spring:
-    application:
-        name: velog-project
+  application:
+    name: velog-project
 
-    datasource:
-        url: jdbc:mysql://localhost:3306/velog
-        username: dms2756
-        password: 163859427
-        driver-class-name: com.mysql.cj.jdbc.Driver
+  datasource:
+    url: jdbc:mysql://localhost:3306/velog
+    username: dms2756
+    password: 163859427
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-    jpa:
-        hibernate:
-            ddl-auto: update
-        show-sql: true
-        properties:
-            hibernate:
-                dialect: org.hibernate.dialect.MySQLDialect
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
 
-    security:
-        oauth2:
-            client:
-                registration:
-                    github:
-                        client-id: Iv23liG5AAIVcUXfWjAG
-                        client-secret: 6774242d837ed4ac92a4caff5208e9dc93b98bdb
-                        scope:
-                            - email
-                            - profile
-                        redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-                        client-name: GitHub
-                provider:
-                    github:
-                        authorization-uri: https://github.com/login/oauth/authorize
-                        token-uri: https://github.com/login/oauth/access_token
-                        user-info-uri: https://api.github.com/user
-                        user-name-attribute: id
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: Iv23liG5AAIVcUXfWjAG
+            client-secret: 6774242d837ed4ac92a4caff5208e9dc93b98bdb
+            scope:
+              - email
+              - profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-name: GitHub
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            user-name-attribute: id
+
+jwt:
+  secretKey: 12345678901234567890123456789012
+  refreshKey: 12345678901234567890123456789012
 
 server:
-    port: 8080
+  port: 8080

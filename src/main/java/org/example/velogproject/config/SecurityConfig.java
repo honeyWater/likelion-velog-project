@@ -1,6 +1,11 @@
 package org.example.velogproject.config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.velogproject.exception.FilterChainExceptionHandler;
+import org.example.velogproject.exception.GlobalExceptionHandler;
+import org.example.velogproject.jwt.exception.CustomAuthenticationEntryPoint;
+import org.example.velogproject.jwt.filter.JwtAuthenticationFilter;
+import org.example.velogproject.jwt.util.JwtTokenizer;
 import org.example.velogproject.security.OAuth2AuthenticationSuccessHandler;
 import org.example.velogproject.service.SocialUserService;
 import org.springframework.context.annotation.Bean;
@@ -16,21 +21,19 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final SocialUserService socialUserService;
+    private final JwtTokenizer jwtTokenizer;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, GlobalExceptionHandler globalExceptionHandler) throws Exception {
         http
             // rest api 설정
             .csrf(AbstractHttpConfigurer::disable) // csrf 비활성화 -> cookie를 사용하지 않으면 꺼도 된다. (cookie를 사용할 경우 httpOnly(XSS 방어), sameSite(CSRF 방어)로 방어해야 한다.)
@@ -51,14 +54,28 @@ public class SecurityConfig {
             )
 
             // oauth2 설정
-            .oauth2Login(oauth2 -> oauth2
+            .oauth2Login(oauth2 -> oauth2 // OAuth2 로그인 기능에 대한 여러 설정의 진입점
                 .loginPage("/loginform")
                 .failureUrl("/error")
+                // OAuth2 로그인 성공 이후 사용자 정보를 가져올 때의 설정을 담당
                 .userInfoEndpoint(userInfo -> userInfo
                     .userService(this.oauth2UserService())
                 )
+                // 로그인 성공 시 핸들러
                 .successHandler(oAuth2AuthenticationSuccessHandler)
-            );
+            )
+
+            // jwt 관련 설정
+            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenizer), UsernamePasswordAuthenticationFilter.class)
+
+            // 인증 예외 핸들링
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+            )
+
+            // GlobalExceptionHandler 추가
+//            .addFilterBefore(new FilterChainExceptionHandler(globalExceptionHandler), JwtAuthenticationFilter.class)
+        ;
 
         return http.build();
     }

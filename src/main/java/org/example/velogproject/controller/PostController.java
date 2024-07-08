@@ -3,7 +3,6 @@ package org.example.velogproject.controller;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.example.velogproject.domain.Post;
 import org.example.velogproject.dto.PostCardDto;
 import org.example.velogproject.service.PostService;
 import org.example.velogproject.service.UserService;
@@ -53,7 +52,7 @@ public class PostController {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("login")) {
+                if (cookie.getName().equals("accessToken")) {
                     model.addAttribute("signedIn", cookie.getValue());
                     break;
                 }
