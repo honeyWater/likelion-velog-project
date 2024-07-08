@@ -143,12 +143,12 @@
           <div class="form_content_main">
             <h2 data-testid="title">회원가입</h2>
             <section>
-              <h4>이메일로 회원가입</h4>
+              <h4>기본 회원 정보를 등록해주세요.</h4>
               <form class="email_form" th:action="@{/userreg}" method="post" th:object="${userRegisterDto}">
                 <div class="form_group">
-                  <input type="text" id="name" name="name" th:field="*{name}" required tabindex="2" placeholder="이름을 입력해주세요." autofocus/>
-                  <label id="name_label" th:class="${valid_name} ? 'server-name-label' : 'js-name-label'">
-                    <span th:if="${valid_name}" th:text="${valid_name}"></span>
+                  <input type="text" id="username" name="name" th:field="*{username}" required tabindex="2" placeholder="이름을 입력해주세요." autofocus/>
+                  <label id="name_label" th:class="${valid_name} ? 'server-username-label' : 'js-username-label'">
+                    <span th:if="${valid_username}" th:text="${valid_username}"></span>
                   </label>
                 </div>
                 <div class="form_group">
@@ -176,6 +176,11 @@
                 <div class="form_group">
                   <input type="text" id="info" name="info" th:field="*{info}" tabindex="2"/>
                 </div>
+
+                <input type="hidden" name="socialId" th:value="*{socialId}">
+                <input type="hidden" name="provider" th:value="*{provider}">
+                <input type="hidden" name="uuid" th:value="*{uuid}">
+
                 <button tabindex="3">회원가입</button>
               </form>
             </section>

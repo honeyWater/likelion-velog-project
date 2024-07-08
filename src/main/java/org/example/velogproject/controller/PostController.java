@@ -1,5 +1,7 @@
 package org.example.velogproject.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.velogproject.domain.Post;
 import org.example.velogproject.dto.PostCardDto;
@@ -20,7 +22,8 @@ public class PostController {
 
     // 기간(period)에 따른 트렌딩 처리
     @GetMapping(value = {"/", "/trending/{period}"})
-    public String getHomePageAndTrending(@PathVariable(required = false) String period, Model model) {
+    public String getHomePageAndTrending(@PathVariable(required = false) String period,
+                                         HttpServletRequest request, Model model) {
         if (period == null) {
             period = "month"; // 기본값은 월간으로
         }
@@ -47,8 +50,15 @@ public class PostController {
                 break;
         }
 
-        // 로그인 상태를 확인하는 코드 필요
-//        model.addAttribute("signedIn", userId);
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("login")) {
+                    model.addAttribute("signedIn", cookie.getValue());
+                    break;
+                }
+            }
+        }
 
         model.addAttribute("posts", trendingPosts);
         model.addAttribute("trendingPeriod", trendingPeriod);

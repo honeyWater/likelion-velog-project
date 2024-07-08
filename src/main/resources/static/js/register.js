@@ -1,26 +1,26 @@
 $(document).ready(function () {
-    // name 중복 확인
-    // name을 입력할 수 있는 input text 영역을 벗어나면 동작한다.
-    $("#name").on("focusout", function () {
-        let name = $("#name").val();
+    // username 중복 확인
+    // username 을 입력할 수 있는 input text 영역을 벗어나면 동작한다.
+    $("#username").on("focusout", function () {
+        let username = $("#username").val();
 
-        if (name == '' || name.length == 0) {
-            $(".js-name-label").css("color", "red").text("이름을 입력해주세요.");
+        if (username == '' || username.length == 0) {
+            $(".js-username-label").css("color", "red").text("이름을 입력해주세요.");
             return false;
         }
 
         $.ajax({
-            url: 'http://localhost:8080/api/users/check-name',
+            url: 'http://localhost:8080/api/users/check-username',
             data: {
-                'name': name
+                'username': username
             },
             type: 'GET',
             dataType: 'json',
             success: function (result) {
                 if (result == true) {
-                    $(".js-name-label").css("color", "black").text("");
+                    $(".js-username-label").css("color", "black").text("");
                 } else {
-                    $(".js-name-label").css("color", "red").text("사용 불가능한 이름입니다.");
+                    $(".js-username-label").css("color", "red").text("사용 불가능한 이름입니다.");
                 }
             }
         }); // End Ajax

@@ -8,7 +8,7 @@ import org.springframework.validation.Errors;
 
 @Component
 @RequiredArgsConstructor
-public class CheckNameValidator extends AbstractValidator<UserRegisterDto> {
+public class CheckUsernameValidator extends AbstractValidator<UserRegisterDto> {
     private final UserRepository userRepository;
 
     @Override

@@ -30,26 +30,35 @@ public class UserRegisterDto {
     private String velogName;
     private String info = "나만의 한줄소개를 작성해주세요.";
     private String profileImage = "D:/사용자/msi/Desktop/멋쟁이 사자처럼/velog 프로젝트/image/default.jpg";
+    private String socialId;
+    private String provider;
+    private String uuid; // SocialLoginInfo 확인에만 쓰임
 
     @Builder
-    public UserRegisterDto(String username, String email, String password, String domain, String velogName, String info, String subInfo) {
+    public UserRegisterDto(String username, String email, String password,
+                           String domain, String velogName, String info,
+                           String socialId, String provider) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.domain = domain;
         this.velogName = velogName;
         this.info = info;
+        this.socialId = socialId;
+        this.password = provider;
     }
 
     public User toEntity() {
         return User.builder()
-                .username(username)
-                .email(email)
-                .password(password)
-                .domain(domain)
-                .velogName(velogName)
-                .info(info)
-                .profileImage(profileImage)
-                .build();
+            .username(username)
+            .email(email)
+            .password(password)
+            .domain(domain)
+            .velogName(velogName)
+            .info(info)
+            .profileImage(profileImage)
+            .socialId(socialId)
+            .provider(provider)
+            .build();
     }
 }

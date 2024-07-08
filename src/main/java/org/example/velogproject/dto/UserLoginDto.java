@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class LoginDto {
+public class UserLoginDto {
     @NotBlank(message = "이메일을 입력해주세요.")
     private String email;
 

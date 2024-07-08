@@ -15,11 +15,11 @@ public class UserRestController {
     private final UserService userService;
 
     // name 중복 확인
-    @GetMapping("/users/check-name")
+    @GetMapping("/users/check-username")
     @ResponseBody
-    public ResponseEntity<Boolean> checkName(@RequestParam String name) {
+    public ResponseEntity<Boolean> checkName(@RequestParam String username) {
         // 이름이 존재하면 사용할 수 없음
-        boolean result = !userService.getCountByName(name);
+        boolean result = !userService.getCountByUsername(username);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

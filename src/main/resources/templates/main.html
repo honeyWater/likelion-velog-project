@@ -24,6 +24,7 @@
         </div>
         <div class="Header_right">
           <!-- 알림, 검색 필요 -->
+          <!--/*@thymesVar id="signedIn" type=""*/-->
           <div th:if="${signedIn == null}">
             <!-- 로그인 상태가 아닐 때 -->
             <a th:href="@{/loginform}">
@@ -149,7 +150,7 @@
             <div class="PostCard_footer">
               <a class="PostCard_userInfo">
                 <img alt="" src="">
-                <span>by<b th:text="${post.getUser().name}"></b></span>
+                <span>by<b th:text="${post.getUser().username}"></b></span>
               </a>
               <div class="PostCard_likes" th:text="${post.likeCount}">
                 <svg viewBox="0 0 24 24">
