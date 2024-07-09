@@ -1,9 +1,12 @@
 package org.example.velogproject.controller;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.example.velogproject.domain.User;
 import org.example.velogproject.dto.PostCardDto;
+import org.example.velogproject.jwt.util.JwtTokenizer;
 import org.example.velogproject.service.PostService;
 import org.example.velogproject.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -16,8 +19,17 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class PostController {
+    private final JwtTokenizer jwtTokenizer;
     private final UserService userService;
     private final PostService postService;
+
+    // 로그인한 유저의 프로필 이미지를 model 에 추가하는 메서드
+    private void addSignedInUserToModel(HttpServletRequest request, Model model) {
+        jwtTokenizer.getAccessToken(request)
+            .map(jwtTokenizer::getUserIdFromToken)
+            .flatMap(userService::getUserById)
+            .ifPresent(user -> model.addAttribute("signedIn", user.getProfileImage()));
+    }
 
     // 기간(period)에 따른 트렌딩 처리
     @GetMapping(value = {"/", "/trending/{period}"})
@@ -49,19 +61,8 @@ public class PostController {
                 break;
         }
 
-        Cookie[] cookies = request.getCookies();
-        String newAccessToken = (String) request.getAttribute("newAccessToken");
-
-        if (newAccessToken != null) {   // accessToken 재발급시 속성에서 확인 필요
-            model.addAttribute("signedIn", newAccessToken);
-        } else if (cookies != null) {   // 일반적인 accessToken 확인
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("accessToken")) {
-                    model.addAttribute("signedIn", cookie.getValue());
-                    break;
-                }
-            }
-        }
+        // 로그인한 유저인지를 판별
+        addSignedInUserToModel(request, model);
 
         model.addAttribute("posts", trendingPosts);
         model.addAttribute("trendingPeriod", trendingPeriod);

@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .requestMatchers("registerform", "userreg", "error",
                     "loginform", "login", "/login/oauth2/code/github", "logout",
                     "welcome", "/", "/trending/{period}", "recent").permitAll()
-                .requestMatchers("/css/**", "/js/**").permitAll() // 정적 리소스에 대한 접근 허용
+                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // 정적 리소스에 대한 접근 허용
                 .anyRequest().authenticated()
             )
 

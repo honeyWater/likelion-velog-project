@@ -191,14 +191,19 @@ public class UserController {
     public String error(HttpServletRequest request, Model model) {
         String exceptionCode = (String) request.getAttribute("exception");
 
-        String message = switch (exceptionCode) {
-            case "NOT_FOUND_TOKEN" -> JwtExceptionCode.NOT_FOUND_TOKEN.getMessage();
-            case "INVALID_TOKEN" -> JwtExceptionCode.INVALID_TOKEN.getMessage();
-            case "EXPIRED_TOKEN" -> JwtExceptionCode.EXPIRED_TOKEN.getMessage();
-            case "UNSUPPORTED_TOKEN" -> JwtExceptionCode.UNSUPPORTED_TOKEN.getMessage();
-            case "UNKNOWN_ERROR" -> JwtExceptionCode.UNKNOWN_ERROR.getMessage();
-            default -> "error";
-        };
+        String message;
+        if (exceptionCode == null) {
+            message = "Unknown error occured";
+        } else {
+            message = switch (exceptionCode) {
+                case "NOT_FOUND_TOKEN" -> JwtExceptionCode.NOT_FOUND_TOKEN.getMessage();
+                case "INVALID_TOKEN" -> JwtExceptionCode.INVALID_TOKEN.getMessage();
+                case "EXPIRED_TOKEN" -> JwtExceptionCode.EXPIRED_TOKEN.getMessage();
+                case "UNSUPPORTED_TOKEN" -> JwtExceptionCode.UNSUPPORTED_TOKEN.getMessage();
+                case "UNKNOWN_ERROR" -> JwtExceptionCode.UNKNOWN_ERROR.getMessage();
+                default -> "Unexpected error";
+            };
+        }
 
         model.addAttribute("exception", message);
         return "error";

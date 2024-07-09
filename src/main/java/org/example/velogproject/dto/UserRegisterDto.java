@@ -29,7 +29,7 @@ public class UserRegisterDto {
 
     private String velogName;
     private String info = "나만의 한줄소개를 작성해주세요.";
-    private String profileImage = "D:/사용자/msi/Desktop/멋쟁이 사자처럼/velog 프로젝트/image/default.jpg";
+    private String profileImage = "default.jpg";
     private String socialId;
     private String provider;
     private String uuid; // SocialLoginInfo 확인에만 쓰임

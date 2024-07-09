@@ -5,10 +5,25 @@
 
 .toggle-button {
     background-color: #F8F9FA;
-    border: 1px solid #dee2e6;
+    border: 1px solid #F8F9FA;
     padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    height: 40px;
+}
+
+.toggle-button img {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+}
+
+.toggle-button svg {
+    color: #868E96;
+    width: 20px;
+    height: 20px;
 }
 
 .toggle-menu .menu-items {

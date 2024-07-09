@@ -37,7 +37,14 @@
               <button class="RoundButton_write">새 글 작성</button>
             </a>
             <div class="toggle-menu">
-              <button class="toggle-button">메뉴 토글</button>
+              <button class="toggle-button">
+                <img th:src="@{'images/' + ${signedIn}}" alt="프로필 이미지" class="profile_image">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em"
+                     width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="none" d="M0 0h24v24H0z"></path>
+                  <path d="M7 10l5 5 5-5z"></path>
+                </svg>
+              </button>
               <ul id="menu-items" class="menu-items">
                 <li><a href="#">내 벨로그</a></li>
                 <li><a href="#">새 글 작성</a></li>

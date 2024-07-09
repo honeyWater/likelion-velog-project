@@ -79,7 +79,7 @@ public class JwtTokenizer {
     public Long getUserIdFromToken(String token) {
         String[] tokenArr = token.split(" ");
         log.info(Arrays.toString(tokenArr));
-        token = tokenArr[1];
+        token = tokenArr[0];
         Claims claims = parseToken(token, accessSecret);
         return Long.valueOf((Integer) claims.get("userId"));
     }
@@ -106,6 +106,22 @@ public class JwtTokenizer {
      */
     public static Key getSigningKey(byte[] secretKey) {
         return Keys.hmacShaKeyFor(secretKey);
+    }
+
+    // request 의 속성이나 쿠키에서 accessToken 이 존재한다면 추출
+    public Optional<String> getAccessToken(HttpServletRequest request) {
+        // 재발급으로 인해 속성에 존재한다면
+        String newAccessToken = (String) request.getAttribute("newAccessToken");
+        if (newAccessToken != null) {
+            return Optional.of(newAccessToken);
+        }
+
+        // 일반적으로 쿠키에 존재한다면
+        return Optional.ofNullable(request.getCookies())
+            .flatMap(cookies -> Arrays.stream(cookies)
+                .filter(cookie -> "accessToken".equals(cookie.getName()))
+                .map(Cookie::getValue)
+                .findFirst());
     }
 
     /**
@@ -147,7 +163,7 @@ public class JwtTokenizer {
 
     // refreshToken 으로 accessToken 재발급
     public void renewAccessToken(HttpServletRequest request, HttpServletResponse response,
-                                 String refreshToken){
+                                 String refreshToken) {
         // 토큰으로부터 정보 얻기
         Claims claims = parseRefreshToken(refreshToken);
         Long userId = Long.valueOf((Integer) claims.get("userId"));
