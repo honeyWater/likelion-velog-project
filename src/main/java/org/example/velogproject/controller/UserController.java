@@ -1,6 +1,5 @@
 package org.example.velogproject.controller;
 
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -158,59 +157,6 @@ public class UserController {
         return "redirect:/";
     }
 
-    /**
-     * 1. 쿠키로부터 리프레시 토큰을 얻어온다.
-     * 없을 경우 - 오류 페이지로 리다이렉트
-     * 있을 경우
-     * 1. 토큰으로부터 정보를 얻어온다.
-     * 2. accessToken 생성
-     * 3. 쿠키 생성 후 response 에 담고
-     * 4. 메인페이지로 리다이렉트 한다.
-     */
-    @PostMapping("/refreshToken")
-    public String getAccessTokenByRefreshToken(HttpServletRequest request, HttpServletResponse response) {
-        String refreshToken = null;
-
-        // HttpOnly 쿠키에서 refreshToken을 읽어오기
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("refreshToken".equals(cookie.getName())) {
-                    refreshToken = cookie.getValue();
-                    break;
-                }
-            }
-        }
-
-        // refreshToken이 없으면 error 페이지로
-        if (refreshToken == null) {
-            return "redirect:/error";
-        }
-
-        // 토큰으로부터 정보 얻기
-        Claims claims = jwtTokenizer.parseRefreshToken(refreshToken);
-        Long userId = Long.valueOf((Integer) claims.get("userId"));
-        User user = userService.getUserById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        // accessToken 생성
-        List<String> roles = ((List<?>) claims.get("roles")).stream()
-            .filter(role -> role instanceof String)
-            .map(role -> (String) role)
-            .toList();
-        String email = claims.getSubject();
-        String accessToken = jwtTokenizer.createAccessToken(userId, email, user.getUsername(), roles);
-
-        // 쿠키 생성 후 response 에 담기
-        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setMaxAge(Math.toIntExact(JwtTokenizer.ACCESS_TOKEN_EXPIRATION_COUNT / 1000)); // 30분
-        response.addCookie(accessTokenCookie);
-
-        // 여기 오기 전의 요청을 기억해서 수행할 수 있나?
-        return "redirect:/";
-    }
-
     // 로그아웃
     @PostMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
@@ -257,7 +203,4 @@ public class UserController {
         model.addAttribute("exception", message);
         return "error";
     }
-
-    // 사용자 개인 블로그 메인 페이지
-//    @GetMapping(value = {"/@{name}"})
 }

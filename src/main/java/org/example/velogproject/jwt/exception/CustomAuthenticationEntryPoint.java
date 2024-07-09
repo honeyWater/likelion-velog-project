@@ -38,23 +38,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         log.error("Rest Request - Commence Get Exception : {}", exception);
 
         if (exception != null) {
-            if (exception.equals(JwtExceptionCode.INVALID_TOKEN.getCode())) {
-                log.error("entry point >> invalid token");
-                setResponse(response, JwtExceptionCode.INVALID_TOKEN);
-            } else if (exception.equals(JwtExceptionCode.EXPIRED_TOKEN.getCode())) {
-                log.error("entry point >> expired token");
-                setResponse(response, JwtExceptionCode.EXPIRED_TOKEN);
-            } else if (exception.equals(JwtExceptionCode.UNSUPPORTED_TOKEN.getCode())) {
-                log.error("entry point >> unsupported token");
-                setResponse(response, JwtExceptionCode.UNSUPPORTED_TOKEN);
-            } else if (exception.equals(JwtExceptionCode.NOT_FOUND_TOKEN.getCode())) {
-                log.error("entry point >> not found token");
-                setResponse(response, JwtExceptionCode.NOT_FOUND_TOKEN);
-            } else {
-                setResponse(response, JwtExceptionCode.UNKNOWN_ERROR);
-            }
-        } else {
-            setResponse(response, JwtExceptionCode.UNKNOWN_ERROR);
+            // 추가적인 API 요청에 대한 예외 처리 로직을 여기에 추가할 수 있다.
         }
     }
 

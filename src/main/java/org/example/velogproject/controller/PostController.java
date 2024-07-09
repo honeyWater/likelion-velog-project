@@ -50,7 +50,11 @@ public class PostController {
         }
 
         Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
+        String newAccessToken = (String) request.getAttribute("newAccessToken");
+
+        if (newAccessToken != null) {   // accessToken 재발급시 속성에서 확인 필요
+            model.addAttribute("signedIn", newAccessToken);
+        } else if (cookies != null) {   // 일반적인 accessToken 확인
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("accessToken")) {
                     model.addAttribute("signedIn", cookie.getValue());

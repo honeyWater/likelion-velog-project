@@ -4,11 +4,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.example.velogproject.domain.RefreshToken;
 import org.example.velogproject.domain.User;
 import org.example.velogproject.service.RefreshTokenService;
+import org.example.velogproject.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,18 +25,21 @@ import java.util.Optional;
 @Component
 public class JwtTokenizer {
     private final RefreshTokenService refreshTokenService;
+    private final UserService userService;
     private final byte[] accessSecret;
     private final byte[] refreshSecret;
 
-    public static Long ACCESS_TOKEN_EXPIRATION_COUNT = 1 * 60 * 1000L; // 30분
+    public static Long ACCESS_TOKEN_EXPIRATION_COUNT = 5 * 60 * 1000L; // 30분
     public static Long REFRESH_TOKEN_EXPIRATION_COUNT = 7 * 24 * 60 * 60 * 1000L; // 7일
 
     public JwtTokenizer(@Value("${jwt.secretKey}") String accessSecrete,
                         @Value("${jwt.refreshKey}") String refreshSecret,
-                        RefreshTokenService refreshTokenService) {
+                        RefreshTokenService refreshTokenService,
+                        UserService userService) {
         this.accessSecret = accessSecrete.getBytes(StandardCharsets.UTF_8);
         this.refreshSecret = refreshSecret.getBytes(StandardCharsets.UTF_8);
         this.refreshTokenService = refreshTokenService;
+        this.userService = userService;
     }
 
     /**
@@ -138,5 +143,32 @@ public class JwtTokenizer {
 
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
+    }
+
+    // refreshToken 으로 accessToken 재발급
+    public void renewAccessToken(HttpServletRequest request, HttpServletResponse response,
+                                 String refreshToken){
+        // 토큰으로부터 정보 얻기
+        Claims claims = parseRefreshToken(refreshToken);
+        Long userId = Long.valueOf((Integer) claims.get("userId"));
+        User user = userService.getUserById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // accessToken 생성
+        List<String> roles = ((List<?>) claims.get("roles")).stream()
+            .filter(role -> role instanceof String)
+            .map(role -> (String) role)
+            .toList();
+        String email = claims.getSubject();
+        String accessToken = createAccessToken(userId, email, user.getUsername(), roles);
+
+        // 쿠키 생성 후 response 에 담기
+        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setMaxAge(Math.toIntExact(JwtTokenizer.ACCESS_TOKEN_EXPIRATION_COUNT / 1000)); // 30분
+
+        // 재발급 시에는 request 의 Attribute 에 토큰을 더해줘야 컨트롤러에서 확인 가능
+        request.setAttribute("newAccessToken", accessToken);
+        response.addCookie(accessTokenCookie);
     }
 }

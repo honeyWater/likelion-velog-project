@@ -1,8 +1,6 @@
 package org.example.velogproject.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.velogproject.exception.FilterChainExceptionHandler;
-import org.example.velogproject.exception.GlobalExceptionHandler;
 import org.example.velogproject.jwt.exception.CustomAuthenticationEntryPoint;
 import org.example.velogproject.jwt.filter.JwtAuthenticationFilter;
 import org.example.velogproject.jwt.util.JwtTokenizer;
@@ -33,7 +31,7 @@ public class SecurityConfig {
     private final JwtTokenizer jwtTokenizer;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, GlobalExceptionHandler globalExceptionHandler) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             // rest api 설정
             .csrf(AbstractHttpConfigurer::disable) // csrf 비활성화 -> cookie를 사용하지 않으면 꺼도 된다. (cookie를 사용할 경우 httpOnly(XSS 방어), sameSite(CSRF 방어)로 방어해야 한다.)
@@ -71,11 +69,7 @@ public class SecurityConfig {
             // 인증 예외 핸들링
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
-            )
-
-            // GlobalExceptionHandler 추가
-//            .addFilterBefore(new FilterChainExceptionHandler(globalExceptionHandler), JwtAuthenticationFilter.class)
-        ;
+            );
 
         return http.build();
     }
