@@ -72,11 +72,11 @@ public class PostController {
 
     // 메인 페이지 - 최신
     @GetMapping("/recent")
-    public String getHomePageAndRecentlyPosted(Model model) {
+    public String getHomePageAndRecentlyPosted(HttpServletRequest request, Model model) {
         List<PostCardDto> recentPosts = postService.getRecentPosts();
 
-        // 로그인 상태를 확인하는 코드 필요
-//        model.addAttribute("signedIn", userId);
+        // 로그인한 유저인지를 판별
+        addSignedInUserToModel(request, model);
 
         model.addAttribute("posts", recentPosts);
         model.addAttribute("recent", "recent");
