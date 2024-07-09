@@ -45,8 +45,10 @@ public class SecurityConfig {
             // request 인증, 인가 설정
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("registerform", "userreg", "error",
-                    "loginform", "login", "/login/oauth2/code/github", "logout",
-                    "welcome", "/", "/trending/{period}", "recent").permitAll()
+                    "loginform", "login", "/login/oauth2/code/github", "logout", "welcome",
+                    "/", "/trending/{period}", "recent",
+                    "/@{domain}", "/@{domain}/posts").permitAll()
+                .requestMatchers("/api/users/**").permitAll() // 모든 /api/users 엔드포인트에 대해 접근 허용
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll() // 정적 리소스에 대한 접근 허용
                 .anyRequest().authenticated()
             )

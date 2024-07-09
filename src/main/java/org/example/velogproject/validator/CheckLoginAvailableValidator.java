@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.velogproject.domain.User;
 import org.example.velogproject.dto.UserLoginDto;
 import org.example.velogproject.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -11,6 +12,7 @@ import org.springframework.validation.Errors;
 @RequiredArgsConstructor
 public class CheckLoginAvailableValidator extends AbstractValidator<UserLoginDto> {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     protected void doValidate(UserLoginDto dto, Errors errors) {
@@ -20,7 +22,7 @@ public class CheckLoginAvailableValidator extends AbstractValidator<UserLoginDto
         }
 
         User user = userRepository.findByEmail(dto.getEmail());
-        if (user == null || !dto.getPassword().equals(user.getPassword())) {
+        if (user == null || !passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             errors.rejectValue("password", "비밀번호 일치 오류", "이메일과 비밀번호가 맞지 않습니다.");
         }
     }

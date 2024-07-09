@@ -58,7 +58,7 @@ public class UserController {
     }
 
     // @InitBinder를 이용하여 로그인Dto에 대한 유효성 검사 추가
-    @InitBinder("loginDto")
+    @InitBinder("userLoginDto")
     public void initLoginDtoBinder(WebDataBinder binder) {
         binder.addValidators(checkLoginAvailableValidator);
     }
@@ -81,7 +81,7 @@ public class UserController {
         }
         model.addAttribute("userRegisterDto", userRegisterDto);
 
-        return "user-register-form";
+        return "/users/user-register-form";
     }
 
     // 회원가입 수행 후 환영 페이지로 리다이렉트
@@ -98,7 +98,7 @@ public class UserController {
                 model.addAttribute(key, validatorResult.get(key));
             }
             // 회원가입 페이지로 다시 리턴
-            return "user-register-form";
+            return "/users/user-register-form";
         }
 
         // 유효성 검증 후 처리
@@ -127,7 +127,7 @@ public class UserController {
     @GetMapping("/loginform")
     public String createLoginForm(Model model) {
         model.addAttribute("userLoginDto", new UserLoginDto());
-        return "login-form";
+        return "/users/login-form";
     }
 
     // 로그인 수행
@@ -143,7 +143,7 @@ public class UserController {
             for (String key : validatorResult.keySet()) {
                 model.addAttribute(key, validatorResult.get(key));
             }
-            return "login-form";
+            return "/users/login-form";
         }
 
         // 여기까지 왔다는 것은 가입한 사용자이며 비밀번호도 일치한다는 점
@@ -183,7 +183,7 @@ public class UserController {
     // 환영 페이지
     @GetMapping("/welcome")
     public String showWelcomePage() {
-        return "welcome";
+        return "/users/welcome";
     }
 
     // error 페이지
