@@ -29,7 +29,7 @@ public class JwtTokenizer {
     private final byte[] accessSecret;
     private final byte[] refreshSecret;
 
-    public static Long ACCESS_TOKEN_EXPIRATION_COUNT = 5 * 60 * 1000L; // 30분
+    public static Long ACCESS_TOKEN_EXPIRATION_COUNT = 30 * 60 * 1000L; // 30분
     public static Long REFRESH_TOKEN_EXPIRATION_COUNT = 7 * 24 * 60 * 60 * 1000L; // 7일
 
     public JwtTokenizer(@Value("${jwt.secretKey}") String accessSecrete,

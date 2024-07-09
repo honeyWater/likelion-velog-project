@@ -46,9 +46,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String refreshToken = getRefreshToken(request);
             if (refreshToken != null) {
                 jwtTokenizer.renewAccessToken(request, response, refreshToken);
-
-                // 쿠키를 다시 읽어서 새로운 accessToken을 설정했는지 확인
-                accessToken = getAccessToken(request);
             }
         } else {
             try {
