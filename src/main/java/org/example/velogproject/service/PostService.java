@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.example.velogproject.domain.Post;
 import org.example.velogproject.dto.PostCardDto;
 import org.example.velogproject.repository.PostRepository;
+import org.example.velogproject.util.SlugUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -94,5 +96,20 @@ public class PostService {
     public List<PostCardDto> getPublishedPostsAlsoInPrivate(Long userId) {
         List<Post> posts = postRepository.findPublishedPostsAlsoInPrivate(userId);
         return toDto(posts);
+    }
+
+    // 슬러그로 게시글 조회
+    @Transactional(readOnly = true)
+    public Optional<Post> findBySlug(String slug){
+        return postRepository.findBySlug(slug);
+    }
+
+    // 게시글 생성
+    @Transactional
+    public Post createPost(Post post){
+        // title 을 독립적인 슬러그 값으로 변환 후 저장
+        String uniqueSlug = SlugUtils.generateUniqueSlug(post.getTitle(), postRepository);
+        post.setSlug(uniqueSlug);
+        return postRepository.save(post);
     }
 }
