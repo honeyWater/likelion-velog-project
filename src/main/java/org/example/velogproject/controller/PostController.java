@@ -29,13 +29,13 @@ public class PostController {
             .map(jwtTokenizer::getUserIdFromToken)
             .flatMap(userService::getUserById);
 
+        User existedUser = null;
         if (user.isPresent()) {
-            User existedUser = user.get();
-            model.addAttribute("signedIn", existedUser);
-            return existedUser;
+            existedUser = user.get();
         }
 
-        return null;
+        model.addAttribute("signedIn", existedUser);
+        return existedUser;
     }
 
     // 기간(period)에 따른 트렌딩 처리
@@ -120,5 +120,11 @@ public class PostController {
         model.addAttribute("userByDomain", userByDomain);
 
         return "personal-blog-main";
+    }
+
+    // 게시글 상세
+    @GetMapping("/@{domain}/{postTitle}")
+    public String getPostDetail(){
+        return "post-detail";
     }
 }

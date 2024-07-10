@@ -24,7 +24,7 @@
             </svg>
           </a>
           <a th:href="@{'/@' + ${domain}}" class="HeaderCustomLogo_userLogo">
-            <span class="userLogo_text" th:text="${signedIn.getVelogName()}"></span>
+            <span class="userLogo_text" th:text="${userByDomain.getVelogName()}"></span>
           </a>
         </div>
         <div class="Header_right">
