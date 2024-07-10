@@ -49,6 +49,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         // OAuth2 로그인 방식(provider)이 많아질 때마다 조건문이 들어가야 한다.
         String socialId = attributes.get("id").toString();
         String username = attributes.get("name").toString();
+        String avatarUrl = attributes.get("avatar_url").toString();
 
         Optional<User> userOptional = userService.findByProviderAndSocialId(provider, String.valueOf(socialId));
         if (userOptional.isPresent()) { // 회원 정보가 있으면 로그인 처리
@@ -65,7 +66,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             // 소셜 로그인 정보 저장
             SocialLoginInfo socialLoginInfo = socialLoginInfoService.saveSocialLoginInfo(provider, String.valueOf(socialId));
             response.sendRedirect("/registerform?provider=" + provider +
-                "&socialId=" + socialId + "&username=" + username + "&uuid=" + socialLoginInfo.getUuid());
+                "&socialId=" + socialId + "&username=" + username + "&uuid=" + socialLoginInfo.getUuid() + "&avatarUrl=" + avatarUrl);
         }
     }
 

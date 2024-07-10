@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -69,6 +70,7 @@ public class UserController {
                                          @RequestParam(value = "socialId", required = false) String socialId,
                                          @RequestParam(value = "uuid", required = false) String uuid,
                                          @RequestParam(value = "username", required = false) String username,
+                                         @RequestParam(value = "avatarUrl", required = false) String profileImage,
                                          Model model) {
 
         UserRegisterDto userRegisterDto = new UserRegisterDto();
@@ -78,6 +80,7 @@ public class UserController {
             userRegisterDto.setSocialId(socialId);
             userRegisterDto.setUuid(uuid);
             userRegisterDto.setUsername(username);
+            userRegisterDto.setProfileImage(profileImage);
         }
         model.addAttribute("userRegisterDto", userRegisterDto);
 
@@ -87,7 +90,7 @@ public class UserController {
     // 회원가입 수행 후 환영 페이지로 리다이렉트
     @PostMapping("/userreg")
     public String createUser(@Valid UserRegisterDto userRegisterDto,
-                             Errors errors, Model model) {
+                             Errors errors, Model model) throws IOException {
         if (errors.hasErrors()) {
             // 회원가입 실패 시 입력 데이터 값을 유지
             model.addAttribute("userRegisterDto", userRegisterDto);
@@ -114,6 +117,10 @@ public class UserController {
             if (duration.toMinutes() > 20) {
                 return "redirect:/error";   // 회원가입이 20분 이상 경과한 경우
             }
+
+            userRegisterDto.setProfileImage(
+                userService.downloadAndSaveProfileImage(userRegisterDto.getProfileImage(), userRegisterDto.getUsername())
+            );
 
             // 유효한 경우 User 정보를 저장
             userService.registUser(userRegisterDto, passwordEncoder);

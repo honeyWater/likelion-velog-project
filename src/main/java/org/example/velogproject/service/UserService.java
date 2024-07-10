@@ -12,7 +12,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Service
@@ -127,5 +132,22 @@ public class UserService {
             validatorResult.put(validKeyName, error.getDefaultMessage());
         }
         return validatorResult;
+    }
+
+    @Transactional
+    public String downloadAndSaveProfileImage(String avatarUrl, String username) throws IOException {
+        // 이미지 다운로드
+        RestTemplate restTemplate = new RestTemplate();
+        byte[] imageBytes = restTemplate.getForObject(avatarUrl, byte[].class);
+
+        // 프로필 이미지 저장 경로 설정
+        String fileName = username + "_profile_image.jpg";
+        Path imagePath = Paths.get("D:/사용자/msi/Desktop/멋쟁이_사자처럼/velog_프로젝트/image/profile_image/", fileName);
+
+        // 이미지 파일로 저장
+        Files.write(imagePath, imageBytes);
+
+        // 저장된 이미지의 상대 경로 반환
+        return fileName;
     }
 }
