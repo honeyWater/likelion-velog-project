@@ -77,6 +77,8 @@ html {
 .UserProfile_left a img {
     color: #FFFFFF;
     display: block;
+    width: 128px;
+    height: 128px;
     border-radius: 50%;
     object-fit: cover;
     box-shadow: 0 0 4px 0 rgba(0, 0, 0, .06);
