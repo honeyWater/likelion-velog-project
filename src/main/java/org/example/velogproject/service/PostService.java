@@ -19,29 +19,29 @@ public class PostService {
     // 게시글 Post -> PostCardDto
     public List<PostCardDto> toDto(List<Post> posts) {
         return posts.stream()
-                .map(post -> PostCardDto.builder()
-                        .id(post.getId())
-                        .user(post.getUser())
-                        .title(post.getTitle())
-                        .content(post.getContent())
-                        .createdAt(post.getCreatedAt())
-                        .thumbnailImage(post.getThumbnailImage())
-                        .inPrivate(post.isInPrivate())
-                        .publishStatus(post.isPublishStatus())
-                        .viewCount(post.getViewCount())
-                        .likeCount(post.getLikeCount())
-                        .commentCount(post.getCommentCount())
-                        .build())
-                .collect(Collectors.toList());
+            .map(post -> PostCardDto.builder()
+                .id(post.getId())
+                .user(post.getUser())
+                .title(post.getTitle())
+                .description(post.getDescription())
+                .createdAt(post.getCreatedAt())
+                .thumbnailImage(post.getThumbnailImage())
+                .inPrivate(post.isInPrivate())
+                .publishStatus(post.isPublishStatus())
+                .viewCount(post.getViewCount())
+                .likeCount(post.getLikeCount())
+                .commentCount(post.getCommentCount())
+                .build())
+            .collect(Collectors.toList());
     }
 
     // 게시글 트렌딩 처리
     public List<PostCardDto> doTrending(List<Post> posts) {
         return toDto(posts.stream()
-                .sorted((post1, post2) -> Double.compare(
-                        post2.getViewCount() * 0.075 + post2.getLikeCount(),
-                        post1.getViewCount() * 0.075 + post1.getLikeCount()))
-                .collect(Collectors.toList()));
+            .sorted((post1, post2) -> Double.compare(
+                post2.getViewCount() * 0.075 + post2.getLikeCount(),
+                post1.getViewCount() * 0.075 + post1.getLikeCount()))
+            .collect(Collectors.toList()));
     }
 
     // 월간 트렌딩 조회
@@ -80,5 +80,19 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<PostCardDto> getRecentPosts() {
         return toDto(postRepository.findRecentPosts());
+    }
+
+    // 특정 사용자의 비공개, 임시 출간이 아닌 게시물 전체 조회
+    @Transactional(readOnly = true)
+    public List<PostCardDto> getPublishedPostsNotInPrivate(Long userId) {
+        List<Post> posts = postRepository.findPublishedPostsNotInPrivate(userId);
+        return toDto(posts);
+    }
+
+    // 특정 사용자의 임시 출간이 아니고, 비공개인 게시물 조회
+    @Transactional(readOnly = true)
+    public List<PostCardDto> getPublishedPostsAlsoInPrivate(Long userId) {
+        List<Post> posts = postRepository.findPublishedPostsAlsoInPrivate(userId);
+        return toDto(posts);
     }
 }

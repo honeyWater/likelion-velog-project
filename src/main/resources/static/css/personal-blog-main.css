@@ -1,0 +1,359 @@
+html {
+    background-color: #FFF;
+}
+
+.toggle-button {
+    background-color: #FFFFFF;
+    border: 0;
+}
+
+.Header_block {
+    width: 100%;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    margin: 0 auto;
+}
+
+.Header_innerBlock {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+}
+
+.Header_innerBlock .HeaderCustomLogo_Block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 21px;
+}
+
+.HeaderCustomLogo {
+    display: flex;
+}
+
+.HeaderCustomLogo_Block a {
+    -webkit-text-decoration: none;
+    text-decoration: none;
+}
+
+.HeaderCustomLogo svg {
+    width: 28px;
+    height: 28px;
+    color: #212529;
+}
+
+.HeaderCustomLogo_userLogo {
+    display: flex;
+    align-items: center;
+    max-width: calc(100vw - 200px);
+    color: #212529;
+    height: 100%;
+    font-size: 21px;
+    margin-left: 16px;
+    font-weight: 600;
+}
+
+.userLogo_text {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.VelogLayout_block {
+    padding-top: 90px;
+    width: 860px;
+    padding-bottom: 64px;
+    margin: 0 auto;
+}
+
+.Userprofile_block .UserProfile_section,
+.Userprofile_block .UserProfile_section .UserProfile_left {
+    display: flex;
+    align-items: center;
+}
+
+.UserProfile_left a img {
+    color: #FFFFFF;
+    display: block;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, .06);
+}
+
+.UserProfile_userInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 16px;
+}
+
+.UserProfile_username {
+    font-size: 24px;
+    line-height: 1.5;
+    font-weight: 700;
+    color: #212529;
+}
+
+.UserProfile_description {
+    white-space: pre-wrap;
+    font-size: 18px;
+    line-height: 1.5;
+    margin-top: 4px;
+    color: #495057;
+    letter-spacing: -.004em;
+}
+
+.UserProfile_seperator {
+    background: #E9ECEF;
+    width: 100%;
+    height: 1px;
+    margin-top: 32px;
+    margin-bottom: 24px;
+}
+
+.UserProfile_bottom {
+    display: flex;
+    flex-direction: column;
+}
+
+.UserProfile_followinfo {
+    flex: 1 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.follower_number {
+    color: #212529;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.follower_text {
+    margin-left: 4px;
+    color: #495057;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.UserProfile_followingInfo {
+    margin-left: 16px;
+}
+
+.following_number {
+    color: #212529;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.following_text {
+    margin-left: 4px;
+    color: #495057;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.UserProfile_icons {
+    margin-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.VelogTab_block {
+    margin-top: 72px;
+    margin-bottom: 72px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.VelogTab_wrapper {
+    display: flex;
+    position: relative;
+}
+
+.VelogTab_active {
+    color: #20C997;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    width: 128px;
+    height: 48px;
+    text-decoration: none;
+    transition: color .25s ease-in-out;
+    font-weight: 600;
+}
+
+.VelogTab_non_active {
+    color: #495057;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    width: 128px;
+    height: 48px;
+    text-decoration: none;
+    transition: color .25s ease-in-out;
+    font-weight: 600;
+}
+
+.VelogTab_indicator {
+    width: 128px;
+    height: 2px;
+    background: #20C997;
+    position: absolute;
+    bottom: -2px;
+    transition: transform 0.3s ease;
+}
+
+.VelogLayout_section {
+    position: relative;
+    width: 100%;
+}
+
+.VelogSearchInput_block {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 32px;
+}
+
+.VelogSearchInput_search {
+    display: flex;
+    height: 36px;
+    border: 1px solid #ADB5BD;
+    padding-left: 10px;
+    padding-right: 10px;
+    align-items: center;
+    transition: all .125s ease-in;
+    cursor: text;
+}
+
+.VelogSearchInput_search svg {
+    width: 16px;
+    height: 16px;
+    transition: all .126s ease-in;
+    margin-right: .5rem;
+    flex-shrink: 0;
+    fill: #ADB5BD;
+}
+
+.VelogSearchInput_search input {
+    transition: all .125s ease-in;
+    font-size: 14px;
+    flex: 1 1;
+    display: block;
+    line-height: 16px;
+    height: 16px;
+    padding: 0;
+    border: none;
+    outline: 0;
+    background: 0 0;
+    color: #495057;
+    min-width: 0;
+}
+
+.VelogPosts_block {
+    position: relative;
+    margin-top: 32px;
+}
+
+.VelogTagVerticalList_block {
+    position: absolute;
+    top: 0;
+    width: 184px;
+    left: -216px;
+}
+
+.VelogTagVerticalList_title {
+    font-size: 16px;
+    line-height: 1.5;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ADB5BD;
+    margin-bottom: 16px;
+    color: #495057;
+    font-weight: 700;
+}
+
+.VelogTagVerticalList_block ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.FlatPostCard_block:first-child {
+    padding-top: 0;
+}
+
+.FlatPostCard_block {
+    padding-top: 64px;
+    padding-bottom: 64px;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.FlatPostCard_block + .FlatPostCard_block {
+    border-top: 1px solid #F1F3F5;
+}
+
+.FlatPostCard_block > a {
+    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
+}
+
+.FlatPostCard_postThumbnail {
+    margin-bottom: 1rem;
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 400px;
+}
+
+.FlatPostCard_postThumbnail img {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    inset: 0px;
+    color: transparent;
+}
+
+.FlatPostCard_block h2 {
+    font-size: 1.5rem;
+    margin: revert;
+    color: #212529;
+    word-break: break-all;
+}
+
+.FlatPostCard_block p {
+    margin-bottom: 2rem;
+    margin-top: .5rem;
+    font-size: 1rem;
+    color: #495057;
+    word-break: break-all;
+}
+
+.FlatPostCard_subInfo {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    color: #868E96;
+    font-size: .875rem;
+}
+
+.FlatPostCard_seperator {
+    margin-left: .5rem;
+    margin-right: .5rem;
+}
+
+.FlatPostCard_likes {
+    display: flex;
+    align-items: center;
+}
+
+.FlatPostCard_likes svg {
+    width: 14px;
+    height: 14px;
+    margin-right: .25rem;
+}

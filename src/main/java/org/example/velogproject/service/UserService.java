@@ -3,6 +3,7 @@ package org.example.velogproject.service;
 import lombok.RequiredArgsConstructor;
 import org.example.velogproject.domain.Role;
 import org.example.velogproject.domain.User;
+import org.example.velogproject.dto.BlogUserDto;
 import org.example.velogproject.dto.UserRegisterDto;
 import org.example.velogproject.repository.RoleRepository;
 import org.example.velogproject.repository.UserRepository;
@@ -45,7 +46,7 @@ public class UserService {
 
     // id로 User 찾기
     @Transactional(readOnly = true)
-    public Optional<User> getUserById(Long id){
+    public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
@@ -69,6 +70,28 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> findByProviderAndSocialId(String provider, String socialId) {
         return userRepository.findByProviderAndSocialId(provider, socialId);
+    }
+
+    // domain 으로 해당 User 찾기
+    @Transactional(readOnly = true)
+    public BlogUserDto getUserByDomain(String domain) {
+        Optional<User> user = userRepository.findByDomain(domain);
+
+        if (user.isPresent()) {
+            User existedUser = user.get();
+            return BlogUserDto.builder()
+                .id(existedUser.getId())
+                .username(existedUser.getUsername())
+                .domain(existedUser.getDomain())
+                .velogName(existedUser.getVelogName())
+                .info(existedUser.getInfo())
+                .profileImage(existedUser.getProfileImage())
+                .followers(existedUser.getFollowers())
+                .followings(existedUser.getFollowings())
+                .build();
+        }
+
+        return null;
     }
 
     // UserRegisterDto -> User Entity 로의 저장, 권한도 함께 저장

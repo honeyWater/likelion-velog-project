@@ -23,8 +23,6 @@
           </a>
         </div>
         <div class="Header_right">
-          <!-- 알림, 검색 필요 -->
-          <!--/*@thymesVar id="signedIn" type=""*/-->
           <div th:if="${signedIn == null}">
             <!-- 로그인 상태가 아닐 때 -->
             <a th:href="@{/loginform}">
@@ -33,12 +31,13 @@
           </div>
           <div th:if="${signedIn != null}">
             <!-- 로그인 상태일 때 -->
+            <!-- 알림, 검색 필요 -->
             <a th:href="@{/#}" class="RoundButton_write_wrapper">
               <button class="RoundButton_write">새 글 작성</button>
             </a>
             <div class="toggle-menu">
               <button class="toggle-button">
-                <img th:src="@{'images/' + ${signedIn}}" alt="프로필 이미지" class="profile_image">
+                <img th:src="@{'/profile_image/' + ${signedIn.getProfileImage()}}" alt="프로필 이미지" class="profile_image">
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em"
                      width="1em" xmlns="http://www.w3.org/2000/svg">
                   <path fill="none" d="M0 0h24v24H0z"></path>
@@ -46,20 +45,23 @@
                 </svg>
               </button>
               <ul id="menu-items" class="menu-items">
-                <li><a href="#">내 벨로그</a></li>
-                <li><a href="#">새 글 작성</a></li>
-                <li><a href="#">임시 글</a></li>
-                <li><a href="#">읽기 목록</a></li>
-                <li><a href="#">설정</a></li>
-                <!--                <li><form action="/logout" method="post"><button type="submit">내 벨로그</button></form></li>-->
-                <!--                <li><form action="/logout" method="post"><button type="submit">새 글 작성</button></form></li>-->
-                <!--                <li><form action="/logout" method="post"><button type="submit">임시 글</button></form></li>-->
-                <!--                <li><form action="/logout" method="post"><button type="submit">읽기 목록</button></form></li>-->
-                <!--                <li><form action="/logout" method="post"><button type="submit">설정</button></form></li>-->
                 <li>
-                  <form action="/logout" method="post">
-                    <button type="submit">로그아웃</button>
-                  </form>
+                  <a th:href="@{'/@' + ${signedIn.getDomain()} + '/posts'}">내 벨로그</a>
+                </li>
+                <li>
+                  <a th:href="@{/#}">새 글 작성</a>
+                </li>
+                <li>
+                  <a th:href="@{/#}">임시 글</a>
+                </li>
+                <li>
+                  <a th:href="@{/#}">읽기 목록</a>
+                </li>
+                <li>
+                  <a th:href="@{/#}">설정</a>
+                </li>
+                <li>
+                  <a href="#" class="logout-button">로그아웃</a>
                 </li>
               </ul>
             </div>
@@ -145,7 +147,7 @@
               <a class="PostCard_styleLink">
                 <h4 class="PostCard_h4" th:text="${post.title}"></h4>
                 <div class="PostCard_descriptionWrapper">
-                  <p class="PostCard_clamp" th:text="${post.content}"></p>
+                  <p class="PostCard_clamp" th:text="${post.description}"></p>
                 </div>
               </a>
               <div class="PostCard_subInfo">

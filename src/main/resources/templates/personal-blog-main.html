@@ -5,44 +5,169 @@
   <title>Title</title>
   <link rel="stylesheet" th:href="@{/css/velog-main.css}"/>
   <link rel="stylesheet" th:href="@{/css/menu.css}"/>
+  <link rel="stylesheet" th:href="@{/css/personal-blog-main.css}"/>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="/js/menu.js"></script>
+  <script src="/js/personal-blog-main.js"></script>
 </head>
 <body>
 <div class="responsive_main">
   <div class="HomeLayout_innerBlock">
-    <header>
-      <div class="HeaderLogo_Block">
-        <!-- 개인 페이지 헤더 로고 필요 -->
-      </div>
-      <div class="Header_right">
-        <div th:if="${signedIn == null}">
-          <!-- 로그인 상태가 아닐 때 -->
-          <!-- 알림, 검색 -->
-          <a th:href="@{/loginform}">
-            <button class="RoundButton_block">로그인</button>
+    <header class="Header_block">
+      <div class="Header_innerBlock">
+        <div class="HeaderCustomLogo_Block">
+          <a th:href="@{/}" class="HeaderCustomLogo">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 192 192">
+              <path fill-rule="evenodd"
+                    d="M24 0h144c13.255 0 24 10.745 24 24v144c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V24C0 10.745 10.745 0 24 0Zm25 57.92v7.56h18l13.68 77.04 17.82-1.26c17.52-22.2 29.34-38.82 35.46-49.86 6.24-11.16 9.36-20.46 9.36-27.9 0-4.44-1.32-7.8-3.96-10.08-2.52-2.28-5.7-3.42-9.54-3.42-7.2 0-13.2 3.06-18 9.18 4.68 3.12 7.86 5.7 9.54 7.74 1.8 1.92 2.7 4.5 2.7 7.74 0 5.4-1.62 11.52-4.86 18.36-3.12 6.84-6.54 12.9-10.26 18.18-2.4 3.36-5.46 7.5-9.18 12.42L88.06 57.2c-.96-4.8-3.96-7.2-9-7.2-2.28 0-6.66.96-13.14 2.88-6.48 1.8-12.12 3.48-16.92 5.04Z"
+                    clip-rule="evenodd"></path>
+            </svg>
+          </a>
+          <a th:href="@{'/@' + ${domain}}" class="HeaderCustomLogo_userLogo">
+            <span class="userLogo_text" th:text="${signedIn.getVelogName()}"></span>
           </a>
         </div>
-        <div th:if="${signedIn != null}">
-          <!-- 로그인 상태일 때 -->
-          <!-- 알림, 검색, 새 글 작성 -->
-          <div class="toggle-menu">
-            <button class="toggle-button">메뉴 토글</button>
-            <ul id="menu-items" class="menu-items">
-              <li><a href="#">내 벨로그</a></li>
-              <li><a href="#">새 글 작성</a></li>
-              <li><a href="#">임시 글</a></li>
-              <li><a href="#">읽기 목록</a></li>
-              <li><a href="#">설정</a></li>
-              <li><form action="/logout" method="post"><button type="submit">로그아웃</button></form></li>
-            </ul>
+        <div class="Header_right">
+          <div th:if="${signedIn == null}">
+            <!-- 로그인 상태가 아닐 때 -->
+            <a th:href="@{/loginform}">
+              <button class="RoundButton_block">로그인</button>
+            </a>
+          </div>
+          <div th:if="${signedIn != null}">
+            <!-- 로그인 상태일 때 -->
+            <!-- 알림, 검색 필요 -->
+            <a th:href="@{/#}" class="RoundButton_write_wrapper">
+              <button class="RoundButton_write">새 글 작성</button>
+            </a>
+            <div class="toggle-menu">
+              <button class="toggle-button">
+                <img th:src="@{'/profile_image/' + ${signedIn.getProfileImage()}}" alt="프로필 이미지" class="profile_image">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em"
+                     width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="none" d="M0 0h24v24H0z"></path>
+                  <path d="M7 10l5 5 5-5z"></path>
+                </svg>
+              </button>
+              <ul id="menu-items" class="menu-items">
+                <li>
+                  <a th:href="@{'/@' + ${signedIn.getDomain()} + '/posts'}">내 벨로그</a>
+                </li>
+                <li>
+                  <a th:href="@{/#}">새 글 작성</a>
+                </li>
+                <li>
+                  <a th:href="@{/#}">임시 글</a>
+                </li>
+                <li>
+                  <a th:href="@{/#}">읽기 목록</a>
+                </li>
+                <li>
+                  <a th:href="@{/#}">설정</a>
+                </li>
+                <li>
+                  <a href="#" onclick="logout('/logout')">로그아웃</a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </header>
 
     <main>
+      <div class="VelogLayout_block">
+        <div class="Userprofile_block">
+          <div class="UserProfile_section">
+            <div class="UserProfile_left">
+              <a th:href="@{'/@' + ${domain}}">
+                <img th:src="@{'/profile_image/' + ${userByDomain.getProfileImage()}}" alt="프로필 이미지">
+              </a>
+              <div class="UserProfile_userInfo">
+                <div class="UserProfile_username">
+                  <span th:text="${userByDomain.getUsername()}"></span>
+                </div>
+                <div class="UserProfile_description" th:text="${userByDomain.getInfo()}"></div>
+              </div>
+            </div>
+          </div>
+          <div class="UserProfile_seperator"></div>
+          <div class="UserProfile_bottom">
+            <div class="UserProfile_followinfo">
+              <a class="UserProfile_followerInfo" th:href="@{'/@' + ${domain} + 'followers'}">
+                <span class="follower_number" th:text="${userByDomain.getFollowers().size()}"></span>
+                <span class="follower_text">팔로워</span>
+              </a>
+              <a class="UserProfile_followingInfo" th:href="@{'/@' + ${domain} + 'followings'}">
+                <span class="following_number" th:text="${userByDomain.getFollowings().size()}"></span>
+                <span class="following_text">팔로잉</span>
+              </a>
+            </div>
+            <div class="UserProfile_icons">
+              <!-- 소셜 아이콘 -->
+            </div>
+          </div>
+        </div>
 
+        <div class="VelogTab_block">
+          <div class="VelogTab_wrapper">
+            <a th:href="@{'/' + ${domain} + '/posts'}"
+               th:class="${posts} ? 'VelogTab_active' : 'VelogTab_non_active'">글</a>
+            <a th:href="@{'/' + ${domain} + '/series'}"
+               th:class="${series} ? 'VelogTab_active' : 'VelogTab_non_active'">시리즈</a>
+            <a th:href="@{'/' + ${domain} + '/about'}"
+               th:class="${about} ? 'VelogTab_active' : 'VelogTab_non_active'">소개</a>
+            <div class="VelogTab_indicator"></div>
+          </div>
+        </div>
+
+        <section class="VelogLayout_section">
+          <div class="VelogSearchInput_block">
+            <div class="VelogSearchInput_search">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 17">
+                <path fill-rule="evenodd"
+                      d="M13.66 7.36a6.3 6.3 0 1 1-12.598 0 6.3 6.3 0 0 1 12.598 0zm-1.73 5.772a7.36 7.36 0 1 1 1.201-1.201l3.636 3.635c.31.31.31.815 0 1.126l-.075.075a.796.796 0 0 1-1.126 0l-3.636-3.635z"></path>
+              </svg>
+              <input placeholder="검색어를 입력하세요">
+            </div>
+          </div>
+          <div class="VelogPosts_block">
+            <aside class="VelogTagVerticalList_block">
+              <div class="VelogTagVerticalList_title">태그 목록</div>
+              <ul>
+                <!-- 태그 목록과 count 수 -->
+              </ul>
+            </aside>
+            <div class="FlatPostCardList_block">
+              <div class="FlatPostCard_block" th:each="post : ${posts}">
+                <a class="FlatPostCard_postThumbnail" th:if="${post.getThumbnailImage() != null}"
+                   th:href="@{'/' + ${domain} + '/' + ${post.getTitle()}}">
+                  <img th:src="@{'thumbnail_image/' + ${post.getThumbnailImage()}}" alt="post-thumbnail">
+                </a>
+                <a th:href="@{'/' + ${domain} + '/' + ${post.getTitle()}}">
+                  <h2 th:text="${post.getTitle()}"></h2>
+                </a>
+                <p th:text="${post.getDescription()}"></p>
+                <div class="FlatPostCard_tagsWrapper">
+                  <!-- 태그들 -->
+                </div>
+                <div class="FlatPostCard_subInfo">
+                  <span th:text="${post.getCreatedAt()}"></span>
+                  <div class="FlatPostCard_seperator">.</div>
+                  <span th:text="${post.commentCount} + '개의 댓글'"></span>
+                  <div class="FlatPostCard_seperator">.</div>
+                  <div class="FlatPostCard_likes">
+                    <svg viewBox="0 0 24 24">
+                      <path fill="currentColor" d="m18 1-6 4-6-4-6 5v7l12 10 12-10V6z"></path>
+                    </svg>
+                    <span th:text="${post.getLikeCount()}"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
   </div>
 </div>

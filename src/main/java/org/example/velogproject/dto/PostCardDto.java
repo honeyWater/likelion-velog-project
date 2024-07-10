@@ -13,7 +13,7 @@ public class PostCardDto {
     private Long id;
     private User user;
     private String title;
-    private String content;
+    private String description;
     private LocalDateTime createdAt;
     private String thumbnailImage;
     private boolean inPrivate;
@@ -23,7 +23,7 @@ public class PostCardDto {
     private Integer commentCount;
 
     @Builder
-    public PostCardDto(Long id, User user, String title, String content,
+    public PostCardDto(Long id, User user, String title, String description,
                        LocalDateTime createdAt, String thumbnailImage,
                        boolean inPrivate, boolean publishStatus,
                        Long viewCount, Integer likeCount, Integer commentCount
@@ -31,7 +31,7 @@ public class PostCardDto {
         this.id = id;
         this.user = user;
         this.title = title;
-        this.content = content;
+        this.description = description;
         this.createdAt = createdAt;
         this.thumbnailImage = thumbnailImage;
         this.inPrivate = inPrivate;

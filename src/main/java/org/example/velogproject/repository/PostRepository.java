@@ -55,4 +55,24 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             order by p.createdAt desc
             """)
     List<Post> findRecentPosts();
+
+    @Query("""
+            select p
+            from Post p
+            where p.user.id = :userId
+            and p.inPrivate = false
+            and p.publishStatus = true
+            order by p.createdAt desc
+            """)
+    List<Post> findPublishedPostsNotInPrivate(@Param("userId") Long userId);
+
+    @Query("""
+            select p
+            from Post p
+            where p.user.id = :userId
+            and p.inPrivate = true
+            and p.publishStatus = true
+            order by p.createdAt desc
+            """)
+    List<Post> findPublishedPostsAlsoInPrivate(@Param("userId") Long userId);
 }
