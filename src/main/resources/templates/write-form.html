@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${post.id != null ? '(작성중) ' + post.title : '새 글 작성'}"></title>
+  <link rel="shortcut icon" th:href="@{'/profile_image/favicon.ico'}" type="image/x-icon">
+  <link rel="icon" th:href="@{'/profile_image/favicon.ico'}" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+  <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+</head>
+<body>
+<div class="write_block">
+  <div class="write_wrapper" th:object="${post}">
+    <div class="write_left">
+      <div class="write_left_block">
+        <div class="write_left_wrapper">
+          <input type="hidden" id="postId" th:value="${post.id}">
+          <!-- 제목과 태그 -->
+          <div style="max-height: 513.5px; opacity: 1;">
+            <div class="title_and_tag">
+              <textarea class="titleArea" style="height: 66px;" placeholder="제목을 입력하세요"
+                        th:value="${post.title}" th:field="*{title}" required></textarea>
+              <div class="titleTag_seperator"></div>
+              <!-- 태그 입력란 -->
+            </div>
+          </div>
+          <!-- 툴바 ? -->
+          <!-- 내용 입력란 -->
+          <div class="write_content_block">
+            <textarea id="content" th:value="${post.content}"
+                      th:field="*{content}" required></textarea>
+          </div>
+          <!-- 나가기, 임시저장, 출간하기 -->
+          <div class="write_left_bottom_block">
+            <div class="write_left_bottom_wrapper">
+              <button class="get_out" onclick="window.history.back()">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em"
+                     width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path>
+                </svg>
+                <span>나가기</span>
+              </button>
+              <div class="bottom_save_wrapper">
+                <button class="temporary_save">임시저장</button>
+                <button class="publish_post">출간하기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="write_right">
+
+    </div>
+  </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const initialContent = /*[[${post.content}]]*/ '';
+        // 전역 변수로 simplemde 를 저장
+        window.simplemde = new SimpleMDE({
+            element: document.getElementById("content"),
+            initialValue: initialContent
+        });
+
+        // temporary_save 버튼에 이벤트 리스너 추가
+        document.querySelector('.temporary_save').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // hidden input에서 post.id 값을 가져옵니다.
+            const postId = document.getElementById('postId').value;
+            // 엔드포인트 결정
+            const endpoint = postId ? '/temporary-save' : '/first-temporary-save';
+            // 메소드 결정
+            const method = postId ? 'PUT' : 'POST';
+
+            // 데이터 준비
+            const data = {
+                id: postId || null,
+                title: document.querySelector('.titleArea').value,
+                content: simplemde.value()
+            };
+
+            // fetch를 사용하여 요청 보내기
+            fetch(endpoint, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Server responded with an error!');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl;
+                    } else {
+                        console.error('No redirect URL provided');
+                        alert('저장은 완료되었지만 리다이렉트 URL이 없습니다.');
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('저장 중 오류가 발생했습니다.');
+                });
+        });
+    });
+</script>
+</body>
+</html>

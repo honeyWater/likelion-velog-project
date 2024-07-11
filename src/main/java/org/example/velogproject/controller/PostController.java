@@ -2,6 +2,7 @@ package org.example.velogproject.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.velogproject.domain.Comment;
 import org.example.velogproject.domain.Post;
 import org.example.velogproject.domain.User;
@@ -12,12 +13,12 @@ import org.example.velogproject.service.PostService;
 import org.example.velogproject.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class PostController {
@@ -142,7 +143,7 @@ public class PostController {
         // 로그인한 유저인지를 판별
         User loginUser = addSignedInUserToModel(request, model);
         // 해당 게시글의 주인이 로그인한 유저라면 수정, 삭제가 가능하도록
-        if (loginUser != null && loginUser.getId().equals(userByDomain.getId())){
+        if (loginUser != null && loginUser.getId().equals(userByDomain.getId())) {
             model.addAttribute("sameUser", "sameUser");
         }
 
@@ -150,5 +151,33 @@ public class PostController {
         model.addAttribute("post", post);
 
         return "post-detail";
+    }
+
+    // 게시글 작성 및 수정 - 권한이 있어야 이용 가능 (permitAll X)
+    @GetMapping("/write")
+    public String getWriteForm(@RequestParam(name = "id", required = false) Long id, Model model) {
+        if (id == null) {
+            // 새 게시글 작성
+            model.addAttribute("post", new Post());
+        } else {
+            // 기존 게시글 수정
+            Optional<Post> existedPost = postService.getPostById(id);
+            if (existedPost.isPresent()) {
+                Post post = existedPost.get();
+                log.info("getId::{}", post.getId().toString());
+                model.addAttribute("post", post);
+            } else {
+                // 게시글이 존재하지 않을 경우 에러 페이지 처리
+                return "redirect:/error";
+            }
+        }
+        return "write-form";
+    }
+
+    // 게시글 출간
+    @PostMapping("/save")
+    public String publishPost() {
+
+        return "redirect:/@";
     }
 }

@@ -29,7 +29,7 @@ public class Post {
     @Column(name = "slug", nullable = false, unique = true)
     private String slug;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, length = 150)
     private String description;
 
     @Column(name = "content", nullable = false)

@@ -2,7 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title th:text="${userByDomain.getDomain() + ' (' + userByDomain.getUsername() + ') / 작성글 - velog' }"></title>
+  <link rel="shortcut icon" th:href="@{'/profile_image/favicon.ico'}" type="image/x-icon">
+  <link rel="icon" th:href="@{'/profile_image/favicon.ico'}" type="image/x-icon">
   <link rel="stylesheet" th:href="@{/css/velog-main.css}"/>
   <link rel="stylesheet" th:href="@{/css/menu.css}"/>
   <link rel="stylesheet" th:href="@{/css/personal-blog-main.css}"/>
@@ -37,7 +39,7 @@
           <div th:if="${signedIn != null}">
             <!-- 로그인 상태일 때 -->
             <!-- 알림, 검색 필요 -->
-            <a th:href="@{/#}" class="RoundButton_write_wrapper">
+            <a th:href="@{/write}" class="RoundButton_write_wrapper">
               <button class="RoundButton_write">새 글 작성</button>
             </a>
             <div class="toggle-menu">
@@ -54,7 +56,7 @@
                   <a th:href="@{'/@' + ${signedIn.getDomain()} + '/posts'}">내 벨로그</a>
                 </li>
                 <li>
-                  <a th:href="@{/#}">새 글 작성</a>
+                  <a th:href="@{/write}">새 글 작성</a>
                 </li>
                 <li>
                   <a th:href="@{/#}">임시 글</a>

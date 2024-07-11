@@ -77,9 +77,6 @@ public class JwtTokenizer {
      * 토큰에서 유저 아이디 얻기
      */
     public Long getUserIdFromToken(String token) {
-        String[] tokenArr = token.split(" ");
-        log.info(Arrays.toString(tokenArr));
-        token = tokenArr[0];
         Claims claims = parseToken(token, accessSecret);
         return Long.valueOf((Integer) claims.get("userId"));
     }

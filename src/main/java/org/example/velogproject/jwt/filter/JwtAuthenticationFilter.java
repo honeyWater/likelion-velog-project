@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String accessToken = getAccessToken(request); // accessToken 얻어냄
-//        log.info(request.getRequestURI());
+        log.info(request.getRequestURI());
         // accessToken 만료된 경우
         if (accessToken == null) {
             // 리프레시 토큰 확인
