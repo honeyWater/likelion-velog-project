@@ -13,6 +13,7 @@ public class PostCardDto {
     private Long id;
     private User user;
     private String title;
+    private String slug;
     private String description;
     private LocalDateTime createdAt;
     private String thumbnailImage;
@@ -23,14 +24,16 @@ public class PostCardDto {
     private Integer commentCount;
 
     @Builder
-    public PostCardDto(Long id, User user, String title, String description,
-                       LocalDateTime createdAt, String thumbnailImage,
-                       boolean inPrivate, boolean publishStatus,
-                       Long viewCount, Integer likeCount, Integer commentCount
+    public PostCardDto(Long id, User user, String title, String slug,
+                       String description, LocalDateTime createdAt,
+                       String thumbnailImage, boolean inPrivate,
+                       boolean publishStatus, Long viewCount,
+                       Integer likeCount, Integer commentCount
     ) {
         this.id = id;
         this.user = user;
         this.title = title;
+        this.slug = slug;
         this.description = description;
         this.createdAt = createdAt;
         this.thumbnailImage = thumbnailImage;

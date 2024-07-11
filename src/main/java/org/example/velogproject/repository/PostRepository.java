@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
@@ -18,7 +19,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             and p.inPrivate = false
             and p.publishStatus = true
             """)
-    List<Post> findMonthlyTrendingPosts(@Param("oneMonthAgo") LocalDateTime oneMonthAgo);
+    List<Post> findMonthlyTrendingPosts(@Param("oneMonthAgo") LocalDateTime oneMonthAgo); // 월간 트렌딩 게시글 조회
 
     @Query("""
             select p
@@ -27,7 +28,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             and p.inPrivate = false
             and p.publishStatus = true
             """)
-    List<Post> findWeeklyTrendingPosts(@Param("twoWeeksAgo") LocalDateTime twoWeeksAgo);
+    List<Post> findWeeklyTrendingPosts(@Param("twoWeeksAgo") LocalDateTime twoWeeksAgo); // 주간 트렌딩 게시글 조회
 
     @Query("""
             select p
@@ -36,7 +37,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             and p.inPrivate = false
             and p.publishStatus = true
             """)
-    List<Post> findDailyTrendingPosts(@Param("twoDaysAgo") LocalDateTime twoDaysAgo);
+    List<Post> findDailyTrendingPosts(@Param("twoDaysAgo") LocalDateTime twoDaysAgo); // 일간 트렌딩 게시글 조회
 
     @Query("""
             select p
@@ -45,7 +46,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             and p.inPrivate = false
             and p.publishStatus = true
             """)
-    List<Post> findYearlyTrendingPosts(@Param("oneYearAgo") LocalDateTime oneYearAgo);
+    List<Post> findYearlyTrendingPosts(@Param("oneYearAgo") LocalDateTime oneYearAgo); // 연간 트렌딩 게시글 조회
 
     @Query("""
             select p
@@ -54,7 +55,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             and p.publishStatus = true
             order by p.createdAt desc
             """)
-    List<Post> findRecentPosts();
+    List<Post> findRecentPosts(); // 모든 사용자의 게시글 최신순 조회
 
     @Query("""
             select p
@@ -64,7 +65,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             and p.publishStatus = true
             order by p.createdAt desc
             """)
-    List<Post> findPublishedPostsNotInPrivate(@Param("userId") Long userId);
+    List<Post> findPublishedPostsNotInPrivate(@Param("userId") Long userId); // 특정 사용자의 비공개가 아닌 출간 게시글 조회
 
     @Query("""
             select p
@@ -74,5 +75,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             and p.publishStatus = true
             order by p.createdAt desc
             """)
-    List<Post> findPublishedPostsAlsoInPrivate(@Param("userId") Long userId);
+    List<Post> findPublishedPostsAlsoInPrivate(@Param("userId") Long userId); // 특정 사용자의 비공개가 포함 출간 게시글 조회
+
+    Optional<Post> findBySlug(String slug);
+    boolean existsBySlug(String slug);
 }

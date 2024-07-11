@@ -141,10 +141,10 @@
             <div class="FlatPostCardList_block">
               <div class="FlatPostCard_block" th:each="post : ${posts}">
                 <a class="FlatPostCard_postThumbnail" th:if="${post.getThumbnailImage() != null}"
-                   th:href="@{'/' + ${domain} + '/' + ${post.getTitle()}}">
+                   th:href="@{'/@' + ${domain} + '/' + ${post.getSlug()}}">
                   <img th:src="@{'thumbnail_image/' + ${post.getThumbnailImage()}}" alt="post-thumbnail">
                 </a>
-                <a th:href="@{'/' + ${domain} + '/' + ${post.getTitle()}}">
+                <a th:href="@{'/@' + ${domain} + '/' + ${post.getSlug()}}">
                   <h2 th:text="${post.getTitle()}"></h2>
                 </a>
                 <p th:text="${post.getDescription()}"></p>

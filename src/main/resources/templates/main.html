@@ -138,13 +138,15 @@
       <main>
         <ul class="PostCardGrid_block grid_homeGrid">
           <li class="PostCard_block" th:each="post : ${posts}">
-            <a th:if="${post.thumbnailImage}" class="PostCard_styleLink">
+            <a th:if="${post.thumbnailImage}" class="PostCard_styleLink"
+               th:href="@{'/@' + ${post.getUser().getDomain()} + '/' + ${post.getSlug()}}">
               <div class="RatioImage_block">
-                <img alt="" src="">
+                <img th:src="@{'thumbnail_image/'+${post.getThumbnailImage()}}" alt="post-thumbnail">
               </div>
             </a>
             <div class="PostCard_content">
-              <a class="PostCard_styleLink">
+              <a th:href="@{'/@' + ${post.getUser().getDomain()} + '/' + ${post.getSlug()}}"
+                 class="PostCard_styleLink">
                 <h4 class="PostCard_h4" th:text="${post.title}"></h4>
                 <div class="PostCard_descriptionWrapper">
                   <p class="PostCard_clamp" th:text="${post.description}"></p>
@@ -157,8 +159,8 @@
               </div>
             </div>
             <div class="PostCard_footer">
-              <a class="PostCard_userInfo">
-                <img alt="" src="">
+              <a class="PostCard_userInfo" th:href="@{'/@' + ${post.getUser().getDomain()}}">
+                <img th:src="@{'/profile_image/' + ${post.getUser().getProfileImage()}}" alt="profile_image">
                 <span>by<b th:text="${post.getUser().username}"></b></span>
               </a>
               <div class="PostCard_likes" th:text="${post.likeCount}">

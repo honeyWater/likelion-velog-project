@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" th:href="@{/css/velog-main.css}"/>
+  <link rel="stylesheet" th:href="@{/css/menu.css}"/>
+  <link rel="stylesheet" th:href="@{/css/personal-blog-main.css}"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="/js/menu.js"></script>
+  <script src="/js/personal-blog-main.js"></script>
+</head>
+<body>
+<div class="responsive_main">
+  <div class="HomeLayout_innerBlock">
+    <header class="Header_block">
+      <div class="Header_innerBlock">
+        <div class="HeaderCustomLogo_Block">
+          <a th:href="@{/}" class="HeaderCustomLogo">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 192 192">
+              <path fill-rule="evenodd"
+                    d="M24 0h144c13.255 0 24 10.745 24 24v144c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V24C0 10.745 10.745 0 24 0Zm25 57.92v7.56h18l13.68 77.04 17.82-1.26c17.52-22.2 29.34-38.82 35.46-49.86 6.24-11.16 9.36-20.46 9.36-27.9 0-4.44-1.32-7.8-3.96-10.08-2.52-2.28-5.7-3.42-9.54-3.42-7.2 0-13.2 3.06-18 9.18 4.68 3.12 7.86 5.7 9.54 7.74 1.8 1.92 2.7 4.5 2.7 7.74 0 5.4-1.62 11.52-4.86 18.36-3.12 6.84-6.54 12.9-10.26 18.18-2.4 3.36-5.46 7.5-9.18 12.42L88.06 57.2c-.96-4.8-3.96-7.2-9-7.2-2.28 0-6.66.96-13.14 2.88-6.48 1.8-12.12 3.48-16.92 5.04Z"
+                    clip-rule="evenodd"></path>
+            </svg>
+          </a>
+          <a th:href="@{'/@' + ${domain}}" class="HeaderCustomLogo_userLogo">
+            <span class="userLogo_text" th:text="${userByDomain.getVelogName()}"></span>
+          </a>
+        </div>
+        <div class="Header_right">
+          <div th:if="${signedIn == null}">
+            <!-- 로그인 상태가 아닐 때 -->
+            <a th:href="@{/loginform}">
+              <button class="RoundButton_block">로그인</button>
+            </a>
+          </div>
+          <div th:if="${signedIn != null}">
+            <!-- 로그인 상태일 때 -->
+            <!-- 알림, 검색 필요 -->
+            <a th:href="@{/#}" class="RoundButton_write_wrapper">
+              <button class="RoundButton_write">새 글 작성</button>
+            </a>
+            <div class="toggle-menu">
+              <button class="toggle-button">
+                <img th:src="@{'/profile_image/' + ${signedIn.getProfileImage()}}" alt="프로필 이미지" class="profile_image">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em"
+                     width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <path fill="none" d="M0 0h24v24H0z"></path>
+                  <path d="M7 10l5 5 5-5z"></path>
+                </svg>
+              </button>
+              <ul id="menu-items" class="menu-items">
+                <li>
+                  <a th:href="@{'/@' + ${signedIn.getDomain()} + '/posts'}">내 벨로그</a>
+                </li>
+                <li>
+                  <a th:href="@{/#}">새 글 작성</a>
+                </li>
+                <li>
+                  <a th:href="@{/#}">임시 글</a>
+                </li>
+                <li>
+                  <a th:href="@{/#}">읽기 목록</a>
+                </li>
+                <li>
+                  <a th:href="@{/#}">설정</a>
+                </li>
+                <li>
+                  <a href="#" onclick="logout('/logout')">로그아웃</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="post_header" th:object="${post}">
+      <div class="post_header_wrapper">
+        <h1 th:text="${post.getTitle()}"></h1>
+        <div class="postInfoLine_wrapper">
+          <div class="postInfoLine_left">
+            <span class="username">
+              <a th:href="@{'/@' + ${userByDomain.getDomain()}}" th:text="${userByDomain.getUsername()}"></a>
+            </span>
+            <span class="separator">·</span>
+            <span th:text="${post.getCreatedAt()}"></span>
+          </div>
+          <div class="postInfoLine_right1" th:if="${sameUser != null}">
+            <button>통계</button>
+            <button>수정</button>
+            <button>삭제</button>
+          </div>
+          <div class="postInfoLine_follow" th:if="${sameUser == null}">
+            <button>팔로우</button>
+          </div>
+        </div>
+        <!-- 태그 래퍼 div -->
+        <!-- 좋아요 리모콘 div -->
+        <!-- #, ##, ### 리모콘 div -->
+      </div>
+      <!-- 게시글 내 가장 맨 위에 있는 이미지, 썸네일로 사용될수도 있음 -->
+    </div>
+
+    <div class="post_content_block">
+      <div class="post_content_wrapper">
+        <div class="post_content" th:text="${post.getContent()}">
+          <!-- content가 html로 작성되도록 어떻게 처리? -->
+        </div>
+      </div>
+    </div>
+
+    <div class="post_owner_block">
+      <div class="post_owner_wrapper">
+        <div class="UserProfile_section">
+          <div class="UserProfile_left">
+            <a th:href="@{'/@' + ${domain}}">
+              <img th:src="@{'/profile_image/' + ${userByDomain.getProfileImage()}}" alt="프로필 이미지">
+            </a>
+            <div class="UserProfile_userInfo">
+              <div class="UserProfile_username">
+                <span th:text="${userByDomain.getUsername()}"></span>
+              </div>
+              <div class="UserProfile_description" th:text="${userByDomain.getInfo()}"></div>
+            </div>
+          </div>
+        </div>
+        <div class="UserProfile_seperator"></div>
+
+      </div>
+    </div>
+
+    <div class="post_previous_next_block">
+      <div class="post_previous_wrapper">
+        <!-- 이전 포스트 -->
+      </div>
+      <div class="post_next_wrapper">
+        <!-- 다음 포스트 -->
+      </div>
+    </div>
+
+    <div class="post_comment_block">
+      <h4 th:text="${post.getCommentCount()} + '개의 댓글'"></h4>
+      <div class="about_comment">
+        <div class="comment_write">
+          <textarea class="comment_input" placeholder="댓글을 작성하세요."></textarea>
+          <div class="button_wrapper">
+            <button class="comment_submit">댓글 작성</button>
+          </div>
+        </div>
+        <div class="all_comment" th:if="${post.getCommentCount() != 0}">
+          <!-- 댓글 처리 -->
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+</body>
+</html>

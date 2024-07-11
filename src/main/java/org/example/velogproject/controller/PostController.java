@@ -2,6 +2,8 @@ package org.example.velogproject.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.example.velogproject.domain.Comment;
+import org.example.velogproject.domain.Post;
 import org.example.velogproject.domain.User;
 import org.example.velogproject.dto.BlogUserDto;
 import org.example.velogproject.dto.PostCardDto;
@@ -123,8 +125,30 @@ public class PostController {
     }
 
     // 게시글 상세
-    @GetMapping("/@{domain}/{postTitle}")
-    public String getPostDetail(){
+    @GetMapping("/@{domain}/{slug}")
+    public String getPostDetail(@PathVariable String domain, @PathVariable String slug,
+                                HttpServletRequest request, Model model) {
+        BlogUserDto userByDomain = userService.getUserByDomain(domain);
+        Optional<Post> postBySlug = postService.findBySlug(slug);
+
+        if (userByDomain == null || postBySlug.isEmpty() ||
+            !slug.equals(postBySlug.get().getSlug())) {
+            return "error";
+        }
+        Post post = postBySlug.get();
+
+//        Comment comment = (Comment) post.getComments();
+
+        // 로그인한 유저인지를 판별
+        User loginUser = addSignedInUserToModel(request, model);
+        // 해당 게시글의 주인이 로그인한 유저라면 수정, 삭제가 가능하도록
+        if (loginUser != null && loginUser.getId().equals(userByDomain.getId())){
+            model.addAttribute("sameUser", "sameUser");
+        }
+
+        model.addAttribute("userByDomain", userByDomain);
+        model.addAttribute("post", post);
+
         return "post-detail";
     }
 }

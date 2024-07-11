@@ -25,6 +25,7 @@ public class PostService {
                 .id(post.getId())
                 .user(post.getUser())
                 .title(post.getTitle())
+                .slug(post.getSlug())
                 .description(post.getDescription())
                 .createdAt(post.getCreatedAt())
                 .thumbnailImage(post.getThumbnailImage())
