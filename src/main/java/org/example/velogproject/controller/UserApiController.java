@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserApiController {
     private final UserService userService;
 
     // name 중복 확인
-    @GetMapping("/users/check-username")
+    @GetMapping("/check-username")
     @ResponseBody
     public ResponseEntity<Boolean> checkName(@RequestParam String username) {
         // 이름이 존재하면 사용할 수 없음
@@ -24,7 +24,7 @@ public class UserApiController {
     }
 
     // email 중복 확인
-    @GetMapping("/users/check-email")
+    @GetMapping("/check-email")
     @ResponseBody
     public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
         // 이메일이 존재하면 사용할 수 없음
@@ -33,7 +33,7 @@ public class UserApiController {
     }
 
     // domain 중복 확인
-    @GetMapping("/users/check-domain")
+    @GetMapping("/check-domain")
     @ResponseBody
     public ResponseEntity<Boolean> checkDomain(@RequestParam String domain) {
         // 도메인이 존재하면 사용할 수 없음

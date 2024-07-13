@@ -7,6 +7,7 @@ import org.example.velogproject.dto.BlogUserDto;
 import org.example.velogproject.dto.UserRegisterDto;
 import org.example.velogproject.repository.RoleRepository;
 import org.example.velogproject.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,9 @@ import java.util.*;
 public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+
+    @Value("${app.upload.dir}")
+    private String uploadDir;
 
     // 특정 이름의 사용자가 존재하는지 카운트
     @Transactional(readOnly = true)
@@ -142,7 +146,7 @@ public class UserService {
 
         // 프로필 이미지 저장 경로 설정
         String fileName = username + "_profile_image.jpg";
-        Path imagePath = Paths.get("D:/사용자/msi/Desktop/멋쟁이_사자처럼/velog_프로젝트/image/profile_image/", fileName);
+        Path imagePath = Paths.get(uploadDir + "profile_image/", fileName);
 
         // 이미지 파일로 저장
         Files.write(imagePath, imageBytes);

@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.velogproject.domain.Post;
 import org.example.velogproject.dto.PostCardDto;
 import org.example.velogproject.repository.PostRepository;
+import org.example.velogproject.util.CommonUtil;
 import org.example.velogproject.util.SlugUtils;
-import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final CommonUtil commonUtil;
 
     // 게시글 Post -> PostCardDto
     public List<PostCardDto> toDto(List<Post> posts) {
@@ -127,7 +128,7 @@ public class PostService {
     @Transactional
     public Post savePostFirstTemporarily(Post post) {
         // 첫 임시저장 세팅
-        post.setDescription(setDescriptionByContent(post.getContent()));
+        post.setDescription(commonUtil.removeHtmlAndMarkdown(post.getContent()));
         post.setCreatedAt(LocalDateTime.now());
         post.setPublishStatus(false);   // 출간 x
         post.setInPrivate(false);       // 비공개 x
@@ -154,7 +155,7 @@ public class PostService {
             postToUpdate.setContent(post.getContent());
             if (!post.isPublishStatus()) {
                 // 출간한 적이 없다면, description 설정
-                postToUpdate.setDescription(setDescriptionByContent(post.getContent()));
+                postToUpdate.setDescription(commonUtil.removeHtmlAndMarkdown(post.getContent()));
             }
 
             // 추가로 필요한 필드 업데이트 (slug)
@@ -164,16 +165,6 @@ public class PostService {
         } else {
             // 기존 게시글이 없을 경우 예외 처리
             throw new RuntimeException("게시글을 찾을 수 없습니다: " + post.getId());
-        }
-    }
-
-    // content 에서 HTML 문법 및 마크다운을 제거하고 150 자로 자른 문자열을 반환
-    private String setDescriptionByContent(String content) {
-        String plainTextContent = Jsoup.parse(content).text();
-        if (plainTextContent.length() > 147) {
-            return plainTextContent.substring(0, 147) + "...";
-        } else {
-            return plainTextContent;
         }
     }
 }

@@ -50,7 +50,8 @@ public class SecurityConfig {
                     "/@{domain}", "/@{domain}/", "/@{domain}/posts",
                     "/@{domain}/{slug}").permitAll()
                 .requestMatchers("/api/users/**").permitAll() // 모든 /api/users 엔드포인트에 대해 접근 허용
-                .requestMatchers("/css/**", "/js/**", "/profile_image/**", "thumbnail_image/**").permitAll() // 정적 리소스에 대한 접근 허용
+                // 정적 리소스에 대한 접근 허용
+                .requestMatchers("/css/**", "/js/**", "/profile_image/**", "thumbnail_image/**", "post_image/**").permitAll()
                 .anyRequest().authenticated()
             )
 
