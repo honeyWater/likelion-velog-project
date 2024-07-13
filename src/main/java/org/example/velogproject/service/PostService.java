@@ -6,6 +6,7 @@ import org.example.velogproject.domain.Post;
 import org.example.velogproject.dto.PostCardDto;
 import org.example.velogproject.repository.PostRepository;
 import org.example.velogproject.util.SlugUtils;
+import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,16 +125,12 @@ public class PostService {
 
     // 첫 게시글 임시저장
     @Transactional
-    public Post savePostFirst(Post post) {
-        // description 설정 부분
-        if (post.getContent().length() > 147) {
-            post.setDescription(post.getContent().substring(0, 147) + "...");
-        } else {
-            post.setDescription(post.getContent());
-        }
+    public Post savePostFirstTemporarily(Post post) {
+        // 첫 임시저장 세팅
+        post.setDescription(setDescriptionByContent(post.getContent()));
         post.setCreatedAt(LocalDateTime.now());
-        post.setPublishStatus(false);
-        post.setInPrivate(false);
+        post.setPublishStatus(false);   // 출간 x
+        post.setInPrivate(false);       // 비공개 x
         post.setViewCount(0L);
         post.setLikeCount(0);
         post.setCommentCount(0);
@@ -147,21 +144,19 @@ public class PostService {
 
     // 기존 게시글 존재 시 해당 게시글을 업데이트
     @Transactional
-    public Post updatePost(Post post) {
+    public Post updatePostTemporarily(Post post) {
         Optional<Post> existedPost = getPostById(post.getId());
         if (existedPost.isPresent()) {
             Post postToUpdate = existedPost.get();
 
             // 필요한 업데이트 작업 수행
-            // description 설정 부분
-            if (post.getContent().length() > 147) {
-                post.setDescription(post.getContent().substring(0, 147) + "...");
-            } else {
-                post.setDescription(post.getContent());
-            }
             postToUpdate.setTitle(post.getTitle());
             postToUpdate.setContent(post.getContent());
-            postToUpdate.setDescription(post.getDescription());
+            if (!post.isPublishStatus()) {
+                // 출간한 적이 없다면, description 설정
+                postToUpdate.setDescription(setDescriptionByContent(post.getContent()));
+            }
+
             // 추가로 필요한 필드 업데이트 (slug)
             postToUpdate.setSlug(SlugUtils.generateUniqueSlug(post.getTitle(), postRepository));
 
@@ -169,6 +164,16 @@ public class PostService {
         } else {
             // 기존 게시글이 없을 경우 예외 처리
             throw new RuntimeException("게시글을 찾을 수 없습니다: " + post.getId());
+        }
+    }
+
+    // content 에서 HTML 문법 및 마크다운을 제거하고 150 자로 자른 문자열을 반환
+    private String setDescriptionByContent(String content) {
+        String plainTextContent = Jsoup.parse(content).text();
+        if (plainTextContent.length() > 147) {
+            return plainTextContent.substring(0, 147) + "...";
+        } else {
+            return plainTextContent;
         }
     }
 }

@@ -48,6 +48,8 @@ dependencies {
 
 	// 마크다운 뷰어
 	implementation 'org.commonmark:commonmark:0.21.0'
+	// Jsoup - HTML 에서 텍스트만 추출하거나 특정 요소를 선택
+	implementation 'org.jsoup:jsoup:1.14.3'
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

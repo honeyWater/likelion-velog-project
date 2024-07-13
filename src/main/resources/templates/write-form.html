@@ -42,7 +42,7 @@
               </button>
               <div class="bottom_save_wrapper">
                 <button class="temporary_save">임시저장</button>
-                <button class="publish_post">출간하기</button>
+                <button class="publish_post" th:text="${post.publishStatus == true ? '수정하기' : '출간하기'}"></button>
               </div>
             </div>
           </div>

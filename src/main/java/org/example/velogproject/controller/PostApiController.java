@@ -10,8 +10,6 @@ import org.example.velogproject.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,7 +30,7 @@ public class PostApiController {
 
             if (user.isPresent()) {
                 user.ifPresent(post::setUser);
-                Post createdPost = postService.savePostFirst(post);
+                Post createdPost = postService.savePostFirstTemporarily(post);
                 String redirectUrl = "/write?id=" + createdPost.getId();
                 return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
             } else {
@@ -55,7 +53,7 @@ public class PostApiController {
             }
 
             // 기존 게시글 업데이트
-            Post updatedPost = postService.updatePost(post);
+            Post updatedPost = postService.updatePostTemporarily(post);
             String redirectUrl = "/write?id=" + updatedPost.getId();
             return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
         } catch (Exception e) {
