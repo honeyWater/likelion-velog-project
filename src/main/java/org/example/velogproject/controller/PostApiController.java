@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.velogproject.domain.Post;
 import org.example.velogproject.domain.User;
+import org.example.velogproject.dto.PostPublishDto;
 import org.example.velogproject.jwt.util.JwtTokenizer;
 import org.example.velogproject.service.PostService;
 import org.example.velogproject.service.UserService;
@@ -40,8 +41,10 @@ public class PostApiController {
 
             if (user.isPresent()) {
                 user.ifPresent(post::setUser);
+                String writeOrPublish = post.getThumbnailImage();
                 Post createdPost = postService.savePostFirstTemporarily(post);
-                String redirectUrl = "/write?id=" + createdPost.getId();
+
+                String redirectUrl = setRedirectUrl(writeOrPublish, createdPost.getId());
                 return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
             } else {
                 return ResponseEntity.badRequest().body("User not found");
@@ -64,8 +67,11 @@ public class PostApiController {
 
             // 기존 게시글 업데이트
             Post updatedPost = postService.updatePostTemporarily(post);
-            String redirectUrl = "/write?id=" + updatedPost.getId();
+
+            // 임시저장에 사용하지 않는 String 값을 이용
+            String redirectUrl = setRedirectUrl(post.getThumbnailImage(), updatedPost.getId());
             return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -87,5 +93,49 @@ public class PostApiController {
         } catch (IOException e) {
             return ResponseEntity.badRequest().body("이미지 업로드에 실패했습니다.");
         }
+    }
+
+    // 썸네일 업로드 처리
+    @PostMapping("/upload-thumbnail")
+    public ResponseEntity<?> uploadThumbnail(@RequestParam("thumbnail") MultipartFile file,
+                                             @RequestParam("postId") Long postId) {
+        try {
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            String filePath = uploadDir + "thumbnail_image/" + fileName;
+
+            File destination = new File(filePath);
+            file.transferTo(destination);
+            postService.savePostThumbnail(fileName, postId);
+
+            String redirectUrl = "/publish?id=" + postId;
+            return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body("썸네일 업로드에 실패했습니다");
+        }
+    }
+
+    // 게시글 실제 출간
+    @PostMapping("/save")
+    public ResponseEntity<?> publishPost(@RequestBody PostPublishDto publishDto) {
+        // 업데이트 수행
+        Post savedPost = postService.publishPost(publishDto);
+
+        // post id로 저장된 user, slug 를 얻어서 /@{domain}/{slug} 로 이동
+        String domain = savedPost.getUser().getDomain();
+        String slug = savedPost.getSlug();
+        String redirectUrl = "/@" + domain + "/" + slug;
+
+        return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
+    }
+
+    // 임시저장 후 redirectUrl 세팅
+    private String setRedirectUrl(String str, Long postId) {
+        if (str.equals("justTemp")) {
+            return "/write?id=" + postId;
+        } else if (str.equals("forPublish")) {
+            return "/publish?id=" + postId;
+        }
+
+        return "/error";
     }
 }

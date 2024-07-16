@@ -2,12 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head>
   <meta charset="UTF-8">
-  <title th:text="${post.getTitle()}"></title>
+  <title th:text="${post.title}"></title>
   <link rel="shortcut icon" th:href="@{'/profile_image/favicon.ico'}" type="image/x-icon">
   <link rel="icon" th:href="@{'/profile_image/favicon.ico'}" type="image/x-icon">
   <link rel="stylesheet" th:href="@{/css/velog-main.css}"/>
   <link rel="stylesheet" th:href="@{/css/menu.css}"/>
   <link rel="stylesheet" th:href="@{/css/personal-blog-main.css}"/>
+  <link rel="stylesheet" th:href="@{/css/post-detail.css}"/>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="/js/menu.js"></script>
   <script src="/js/personal-blog-main.js"></script>
@@ -26,7 +27,7 @@
             </svg>
           </a>
           <a th:href="@{'/@' + ${domain}}" class="HeaderCustomLogo_userLogo">
-            <span class="userLogo_text" th:text="${userByDomain.getVelogName()}"></span>
+            <span class="userLogo_text" th:text="${userByDomain.velogName}"></span>
           </a>
         </div>
         <div class="Header_right">
@@ -44,7 +45,7 @@
             </a>
             <div class="toggle-menu">
               <button class="toggle-button">
-                <img th:src="@{'/profile_image/' + ${signedIn.getProfileImage()}}" alt="프로필 이미지" class="profile_image">
+                <img th:src="@{'/profile_image/' + ${signedIn.profileImage}}" alt="프로필 이미지" class="profile_image">
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em"
                      width="1em" xmlns="http://www.w3.org/2000/svg">
                   <path fill="none" d="M0 0h24v24H0z"></path>
@@ -53,7 +54,7 @@
               </button>
               <ul id="menu-items" class="menu-items">
                 <li>
-                  <a th:href="@{'/@' + ${signedIn.getDomain()} + '/posts'}">내 벨로그</a>
+                  <a th:href="@{'/@' + ${signedIn.domain} + '/posts'}">내 벨로그</a>
                 </li>
                 <li>
                   <a th:href="@{/write}">새 글 작성</a>
@@ -79,14 +80,14 @@
 
     <div class="post_header" th:object="${post}">
       <div class="post_header_wrapper">
-        <h1 th:text="${post.getTitle()}"></h1>
+        <h1 th:text="${post.title}"></h1>
         <div class="postInfoLine_wrapper">
           <div class="postInfoLine_left">
             <span class="username">
-              <a th:href="@{'/@' + ${userByDomain.getDomain()}}" th:text="${userByDomain.getUsername()}"></a>
+              <a th:href="@{'/@' + ${userByDomain.domain}}" th:text="${userByDomain.username}"></a>
             </span>
             <span class="separator">·</span>
-            <span th:text="${post.getCreatedAt()}"></span>
+            <span th:text="${post.createdAt}"></span>
           </div>
           <div class="postInfoLine_right1" th:if="${sameUser != null}">
             <button>통계</button>
@@ -101,6 +102,8 @@
         <!-- 좋아요 리모콘 div -->
         <!-- #, ##, ### 리모콘 div -->
       </div>
+      <img class="post_detail_thumbnail" th:if="${post.thumbnailImage != null}"
+           th:src="@{'/thumbnail_image/' + ${post.thumbnailImage}}" alt="post-thumbnail">
       <!-- 게시글 내 가장 맨 위에 있는 이미지, 썸네일로 사용될수도 있음 -->
     </div>
 
@@ -115,13 +118,13 @@
         <div class="UserProfile_section">
           <div class="UserProfile_left">
             <a th:href="@{'/@' + ${domain}}">
-              <img th:src="@{'/profile_image/' + ${userByDomain.getProfileImage()}}" alt="프로필 이미지">
+              <img th:src="@{'/profile_image/' + ${userByDomain.profileImage}}" alt="프로필 이미지">
             </a>
             <div class="UserProfile_userInfo">
               <div class="UserProfile_username">
-                <span th:text="${userByDomain.getUsername()}"></span>
+                <span th:text="${userByDomain.username}"></span>
               </div>
-              <div class="UserProfile_description" th:text="${userByDomain.getInfo()}"></div>
+              <div class="UserProfile_description" th:text="${userByDomain.info}"></div>
             </div>
           </div>
         </div>
@@ -153,7 +156,6 @@
         </div>
       </div>
     </div>
-
 
   </div>
 </div>

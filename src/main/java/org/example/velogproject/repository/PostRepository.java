@@ -71,11 +71,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             select p
             from Post p
             where p.user.id = :userId
-            and p.inPrivate = true
             and p.publishStatus = true
             order by p.createdAt desc
             """)
-    List<Post> findPublishedPostsAlsoInPrivate(@Param("userId") Long userId); // 특정 사용자의 비공개가 포함 출간 게시글 조회
+    List<Post> findPublishedPostsAlsoInPrivate(@Param("userId") Long userId); // 특정 사용자의 비공개가 포함된 출간 게시글 조회
 
     Optional<Post> findBySlug(String slug);
     boolean existsBySlug(String slug);

@@ -8,6 +8,7 @@ import org.example.velogproject.domain.Post;
 import org.example.velogproject.domain.User;
 import org.example.velogproject.dto.BlogUserDto;
 import org.example.velogproject.dto.PostCardDto;
+import org.example.velogproject.dto.PostPublishDto;
 import org.example.velogproject.jwt.util.JwtTokenizer;
 import org.example.velogproject.service.PostService;
 import org.example.velogproject.service.UserService;
@@ -174,10 +175,13 @@ public class PostController {
         return "write-form";
     }
 
-    // 게시글 출간
-    @PostMapping("/save")
-    public String publishPost() {
+    // 게시글 작성 후 출간 폼 반환
+    @GetMapping("/publish")
+    public String getPublishForm(@RequestParam(name = "id") Long id, Model model) {
+        Optional<Post> post = postService.getPostById(id);
 
-        return "redirect:/@";
+        post.ifPresent(value -> model.addAttribute("domain", value.getUser().getDomain()));
+        model.addAttribute("post", postService.getPostPublishDtoById(id));
+        return "publish-form";
     }
 }

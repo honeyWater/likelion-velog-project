@@ -112,7 +112,56 @@ document.addEventListener("DOMContentLoaded", function () {
         const data = {
             id: postId || null,
             title: document.querySelector('.titleArea').value,
-            content: simplemde.value()
+            content: simplemde.value(),
+            thumbnailImage: 'justTemp'
+        };
+
+        // fetch를 사용하여 요청 보내기
+        fetch(endpoint, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server responded with an error!');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    console.error('No redirect URL provided');
+                    alert('저장은 완료되었지만 리다이렉트 URL이 없습니다.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('저장 중 오류가 발생했습니다.');
+            });
+    });
+
+    // publish_post 버튼에 이벤트 리스너 추가
+    document.querySelector('.publish_post').addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // hidden input에서 post.id 값을 가져옵니다.
+        const postId = document.getElementById('postId').value;
+        // 엔드포인트 결정
+        const endpoint = postId ? '/api/posts/temporary-save' : '/api/posts/first-temporary-save';
+        // 메소드 결정
+        const method = postId ? 'PUT' : 'POST';
+
+        // 데이터 준비
+        const data = {
+            id: postId || null,
+            title: document.querySelector('.titleArea').value,
+            content: simplemde.value(),
+            thumbnailImage: 'forPublish'
         };
 
         // fetch를 사용하여 요청 보내기

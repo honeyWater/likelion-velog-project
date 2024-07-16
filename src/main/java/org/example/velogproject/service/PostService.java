@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.velogproject.domain.Post;
 import org.example.velogproject.dto.PostCardDto;
+import org.example.velogproject.dto.PostPublishDto;
 import org.example.velogproject.repository.PostRepository;
 import org.example.velogproject.util.CommonUtil;
 import org.example.velogproject.util.SlugUtils;
@@ -22,8 +23,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final CommonUtil commonUtil;
 
-    // 게시글 Post -> PostCardDto
-    public List<PostCardDto> toDto(List<Post> posts) {
+    // 게시글 List<Post> -> List<PostCardDto>
+    public List<PostCardDto> toPostCardDto(List<Post> posts) {
         return posts.stream()
             .map(post -> PostCardDto.builder()
                 .id(post.getId())
@@ -42,16 +43,16 @@ public class PostService {
             .collect(Collectors.toList());
     }
 
-    // 게시글 트렌딩 처리
+    // 게시글 트렌딩 처리 - PostCardDto
     public List<PostCardDto> doTrending(List<Post> posts) {
-        return toDto(posts.stream()
+        return toPostCardDto(posts.stream()
             .sorted((post1, post2) -> Double.compare(
                 post2.getViewCount() * 0.075 + post2.getLikeCount(),
                 post1.getViewCount() * 0.075 + post1.getLikeCount()))
             .collect(Collectors.toList()));
     }
 
-    // 월간 트렌딩 조회
+    // 월간 트렌딩 조회 - PostCardDto
     @Transactional(readOnly = true)
     public List<PostCardDto> getMonthlyTrendingPosts() {
         LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
@@ -59,7 +60,7 @@ public class PostService {
         return doTrending(posts);
     }
 
-    // 주간 트렌딩 조회
+    // 주간 트렌딩 조회 - PostCardDto
     @Transactional(readOnly = true)
     public List<PostCardDto> getWeeklyTrendingPosts() {
         LocalDateTime twoWeeksAgo = LocalDateTime.now().minusWeeks(2);
@@ -67,7 +68,7 @@ public class PostService {
         return doTrending(posts);
     }
 
-    // 일간 트렌딩 조회
+    // 일간 트렌딩 조회 - PostCardDto
     @Transactional(readOnly = true)
     public List<PostCardDto> getDailyTrendingPosts() {
         LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);
@@ -75,7 +76,7 @@ public class PostService {
         return doTrending(posts);
     }
 
-    // 연간 트렌딩 조회
+    // 연간 트렌딩 조회 - PostCardDto
     @Transactional(readOnly = true)
     public List<PostCardDto> getYearlyTrendingPosts() {
         LocalDateTime oneYearAgo = LocalDateTime.now().minusYears(1);
@@ -83,30 +84,50 @@ public class PostService {
         return doTrending(posts);
     }
 
-    // 최신순 게시글 조회
+    // 최신순 게시글 조회 - PostCardDto
     @Transactional(readOnly = true)
     public List<PostCardDto> getRecentPosts() {
-        return toDto(postRepository.findRecentPosts());
+        return toPostCardDto(postRepository.findRecentPosts());
     }
 
-    // 특정 사용자의 비공개, 임시 출간이 아닌 게시물 전체 조회
+    // 특정 사용자의 비공개, 임시 출간이 아닌 게시물 전체 조회 - PostCardDto
     @Transactional(readOnly = true)
     public List<PostCardDto> getPublishedPostsNotInPrivate(Long userId) {
         List<Post> posts = postRepository.findPublishedPostsNotInPrivate(userId);
-        return toDto(posts);
+        return toPostCardDto(posts);
     }
 
-    // 특정 사용자의 임시 출간이 아니고, 비공개인 게시물 조회
+    // 특정 사용자의 임시 출간이 아니고, 비공개인 게시물 조회 - PostCardDto
     @Transactional(readOnly = true)
     public List<PostCardDto> getPublishedPostsAlsoInPrivate(Long userId) {
         List<Post> posts = postRepository.findPublishedPostsAlsoInPrivate(userId);
-        return toDto(posts);
+        return toPostCardDto(posts);
     }
 
     // post id 로 게시글 조회
     @Transactional(readOnly = true)
     public Optional<Post> getPostById(Long id) {
         return postRepository.findById(id);
+    }
+
+    // id로 게시글 조회 - PostPublishDto
+    @Transactional(readOnly = true)
+    public PostPublishDto getPostPublishDtoById(Long id){
+        Optional<Post> existedPost = postRepository.findById(id);
+        if (existedPost.isPresent()){
+            Post post = existedPost.get();
+            return PostPublishDto.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .slug(post.getSlug())
+                .description(post.getDescription())
+                .thumbnailImage(post.getThumbnailImage())
+                .inPrivate(post.isInPrivate())
+                .publishStatus(post.isPublishStatus())
+                .build();
+        }
+
+        return null;
     }
 
     // 슬러그로 게시글 조회
@@ -130,6 +151,7 @@ public class PostService {
         // 첫 임시저장 세팅
         post.setDescription(commonUtil.removeHtmlAndMarkdown(post.getContent()));
         post.setCreatedAt(LocalDateTime.now());
+        post.setThumbnailImage(null);   // controller 에서 String 값으로 이용 후 null 처리
         post.setPublishStatus(false);   // 출간 x
         post.setInPrivate(false);       // 비공개 x
         post.setViewCount(0L);
@@ -165,6 +187,37 @@ public class PostService {
         } else {
             // 기존 게시글이 없을 경우 예외 처리
             throw new RuntimeException("게시글을 찾을 수 없습니다: " + post.getId());
+        }
+    }
+
+    // 썸네일 업로드 저장
+    @Transactional
+    public void savePostThumbnail(String thumbnail, Long id){
+        Optional<Post> post = getPostById(id);
+        if (post.isPresent()){
+            Post existedPost = post.get();
+            existedPost.setThumbnailImage(thumbnail);
+            postRepository.save(existedPost);
+        }
+    }
+
+    // 게시글 출간
+    @Transactional
+    public Post publishPost(PostPublishDto publishDto){
+        Optional<Post> existedPost = getPostById(publishDto.getId());
+        if (existedPost.isPresent()){
+            Post postToUpdate = existedPost.get();
+
+            // 출간 시 필요한 업데이트 수행
+            postToUpdate.setThumbnailImage(publishDto.getThumbnailImage());
+            postToUpdate.setDescription(publishDto.getDescription());
+            postToUpdate.setInPrivate(publishDto.isInPrivate());
+            postToUpdate.setSlug(publishDto.getSlug());
+            postToUpdate.setPublishStatus(publishDto.isPublishStatus());
+
+            return postRepository.save(postToUpdate);
+        } else {
+            throw new RuntimeException("게시글을 찾을 수 없습니다: " + publishDto.getId());
         }
     }
 }
