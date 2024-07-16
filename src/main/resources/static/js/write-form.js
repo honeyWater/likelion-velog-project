@@ -12,15 +12,49 @@ document.addEventListener("DOMContentLoaded", function () {
     window.simplemde = new SimpleMDE({
         element: document.getElementById("content"),
         initialValue: initialContent,
+        placeholder: "당신의 이야기를 적어보세요...",
         toolbar: [
-            "bold", "italic", "heading", "|",
-            "quote", "unordered-list", "ordered-list", "|",
-            "link", "image", "|",
-            "preview", "side-by-side",
+            "heading-1", "heading-2", "heading-3", "|",
+            "bold", "italic", "strikethrough", "|",
+            "quote", "link", "image", "code", "table", "|",
         ],
         uploadImage: true,
-        imageUploadFunction: uploadImage
+        imageUploadFunction: uploadImage,
+        previewRender: function(plainText, preview){
+            // 이 함수는 미리보기를 렌더링할 때 호출된다.
+            setTimeout(function(){
+                preview.innerHTML = this.parent.markdown(plainText);
+            }.bind(this), 1);
+            return "로딩중...";
+        },
+        spellChecker: false,
+        sideBySideFullscreen: false,
+        status: false
     });
+
+    // SimpleMDE의 미리보기를 오른쪽 패널로 이동
+    document.querySelector('.write_right #preview').appendChild(
+        document.querySelector('.editor-preview-side')
+    );
+
+    // 미리보기 업데이트 함수
+    function updatePreview() {
+        var preview = document.querySelector('.write_right #preview');
+        preview.innerHTML = simplemde.markdown(simplemde.value());
+    }
+
+    // 에디터 내용이 변경될 때마다 미리보기 업데이트
+    simplemde.codemirror.on("change", updatePreview);
+
+    // 초기 미리보기 업데이트
+    updatePreview();
+
+    // 제목 실시간으로 미리보기 기능
+    const titleArea = document.querySelector('.titleArea');
+    const titlePreview = document.querySelector('.title_preview');
+    titleArea.addEventListener('input', function() {
+        titlePreview.textContent = this.value;
+    })
 
     // drawImage 함수 오버라이드
     simplemde.toolbar.find(item => item.name === 'image').action = function customDrawImage(editor) {

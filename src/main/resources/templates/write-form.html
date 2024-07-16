@@ -6,6 +6,7 @@
   <link rel="shortcut icon" th:href="@{'/profile_image/favicon.ico'}" type="image/x-icon">
   <link rel="icon" th:href="@{'/profile_image/favicon.ico'}" type="image/x-icon">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+  <link rel="stylesheet" th:href="@{/css/write-form.css}"/>
   <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
   <script src="/js/write-form.js"></script>
 </head>
@@ -22,7 +23,11 @@
               <textarea class="titleArea" style="height: 66px;" placeholder="제목을 입력하세요"
                         th:value="${post.title}" th:field="*{title}" required></textarea>
               <div class="titleTag_seperator"></div>
-              <!-- 태그 입력란 -->
+              <div>
+                <div class="tag_wrapper">
+                  <input placeholder="태그를 입력하세요." tabindex="2">
+                </div>
+              </div>
             </div>
           </div>
           <!-- 툴바 ? -->
@@ -52,7 +57,10 @@
     </div>
 
     <div class="write_right">
-
+      <div class="right_wrapper">
+        <h1 class="title_preview"></h1>
+        <div id="preview"></div>
+      </div>
     </div>
   </div>
 </div>
