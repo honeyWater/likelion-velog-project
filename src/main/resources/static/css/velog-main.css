@@ -406,5 +406,11 @@ ul {
 }
 
 .PostCard_likes svg {
-    margin-right: 0.25rem;
+    width: .75rem;
+    height: .75rem;
+    margin-right: 0.5rem;
+}
+
+.PostCard_likes span {
+    padding-bottom: 3px;
 }

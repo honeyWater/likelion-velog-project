@@ -143,7 +143,7 @@
             <a th:if="${post.thumbnailImage}" class="PostCard_styleLink"
                th:href="@{'/@' + ${post.getUser().getDomain()} + '/' + ${post.getSlug()}}">
               <div class="RatioImage_block">
-                <img th:src="@{'thumbnail_image/'+${post.getThumbnailImage()}}" alt="post-thumbnail">
+                <img th:src="@{'/thumbnail_image/'+${post.getThumbnailImage()}}" alt="post-thumbnail">
               </div>
             </a>
             <div class="PostCard_content">
@@ -165,10 +165,11 @@
                 <img th:src="@{'/profile_image/' + ${post.getUser().getProfileImage()}}" alt="profile_image">
                 <span>by<b th:text="${post.getUser().username}"></b></span>
               </a>
-              <div class="PostCard_likes" th:text="${post.likeCount}">
+              <div class="PostCard_likes">
                 <svg viewBox="0 0 24 24">
                   <path fill="currentColor" d="m18 1-6 4-6-4-6 5v7l12 10 12-10V6z"></path>
                 </svg>
+                <span th:text="${post.getLikeCount()}"></span>
               </div>
             </div>
           </li>
