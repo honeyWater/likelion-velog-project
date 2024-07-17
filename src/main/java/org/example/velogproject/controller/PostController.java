@@ -165,7 +165,6 @@ public class PostController {
             Optional<Post> existedPost = postService.getPostById(id);
             if (existedPost.isPresent()) {
                 Post post = existedPost.get();
-                log.info("getId::{}", post.getId().toString());
                 model.addAttribute("post", post);
             } else {
                 // 게시글이 존재하지 않을 경우 에러 페이지 처리

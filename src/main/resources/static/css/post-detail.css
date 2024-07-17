@@ -1,6 +1,6 @@
 .post_header {
     margin-top: 5.5rem;
-    width: 860px;
+    width: 768px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -75,8 +75,14 @@ a:-webkit-any-link {
     color: #868E96;
 }
 
-.postInfoLine_right1 button:hover {
+.postInfoLine_right1 button a {
+    color: #868E96;
+    text-decoration: none;
+}
+
+.postInfoLine_right1 button a:hover {
     color: #495057;
+    text-decoration: none;
 }
 
 .postInfoLine_right1 button + button {
@@ -127,7 +133,7 @@ a:-webkit-any-link {
 }
 
 .post_content_block {
-    width: 860px;
+    width: 768px;
     margin: 5rem auto 0;
 }
 
@@ -142,7 +148,7 @@ a:-webkit-any-link {
 }
 
 .post_owner_block {
-    width: 860px;
+    width: 768px;
     margin-top: 16rem;
     margin-bottom: 6rem;
     margin-left: auto;
@@ -213,7 +219,7 @@ a:-webkit-any-link {
 }
 
 .post_comment_block {
-    width: 860px;
+    width: 768px;
     color: #212529;
     margin-top: 3rem;
     margin-left: auto;
