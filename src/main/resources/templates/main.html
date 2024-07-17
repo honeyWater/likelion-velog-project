@@ -137,7 +137,7 @@
       <main>
         <ul class="PostCardGrid_block grid_homeGrid">
           <li class="PostCard_block" th:each="post : ${posts}">
-            <a th:if="${post.thumbnailImage}" class="PostCard_styleLink"
+            <a th:if="${post.thumbnailImage != null and post.thumbnailImage != ''}" class="PostCard_styleLink"
                th:href="@{'/@' + ${post.getUser().getDomain()} + '/' + ${post.getSlug()}}">
               <div class="RatioImage_block">
                 <img th:src="@{'/thumbnail_image/'+${post.getThumbnailImage()}}" alt="post-thumbnail">

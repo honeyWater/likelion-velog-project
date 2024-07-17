@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // 로그아웃 버튼에 이벤트 리스너 추가
         const logoutButton = document.querySelector('.logout-button');
         if (logoutButton) {
-            logoutButton.addEventListener('click', function(event) {
+            logoutButton.addEventListener('click', function (event) {
                 event.preventDefault(); // 기본 동작 방지
                 logout(); // 로그아웃 함수 호출
             });
