@@ -3,12 +3,10 @@ package org.example.velogproject.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.velogproject.domain.Comment;
 import org.example.velogproject.domain.Post;
 import org.example.velogproject.domain.User;
 import org.example.velogproject.dto.BlogUserDto;
 import org.example.velogproject.dto.PostCardDto;
-import org.example.velogproject.dto.PostPublishDto;
 import org.example.velogproject.jwt.util.JwtTokenizer;
 import org.example.velogproject.service.PostService;
 import org.example.velogproject.service.UserService;
@@ -78,7 +76,7 @@ public class PostController {
         model.addAttribute("posts", trendingPosts);
         model.addAttribute("trendingPeriod", trendingPeriod);
 
-        return "main";
+        return "posts/main";
     }
 
     // 메인 페이지 - 최신
@@ -92,7 +90,7 @@ public class PostController {
         model.addAttribute("posts", recentPosts);
         model.addAttribute("recent", "recent");
 
-        return "main";
+        return "posts/main";
     }
 
     // 메인 페이지 - 피드
@@ -123,7 +121,7 @@ public class PostController {
         model.addAttribute("posts", posts);
         model.addAttribute("userByDomain", userByDomain);
 
-        return "personal-blog-main";
+        return "posts/personal-blog-main";
     }
 
     // 게시글 상세
@@ -151,7 +149,7 @@ public class PostController {
         model.addAttribute("userByDomain", userByDomain);
         model.addAttribute("post", post);
 
-        return "post-detail";
+        return "posts/post-detail";
     }
 
     // 게시글 작성 및 수정 - 권한이 있어야 이용 가능 (permitAll X)
@@ -171,7 +169,7 @@ public class PostController {
                 return "redirect:/error";
             }
         }
-        return "write-form";
+        return "posts/write-form";
     }
 
     // 게시글 작성 후 출간 폼 반환
@@ -181,6 +179,6 @@ public class PostController {
 
         post.ifPresent(value -> model.addAttribute("domain", value.getUser().getDomain()));
         model.addAttribute("post", postService.getPostPublishDtoById(id));
-        return "publish-form";
+        return "posts/publish-form";
     }
 }

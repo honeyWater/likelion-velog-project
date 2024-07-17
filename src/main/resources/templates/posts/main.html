@@ -16,7 +16,7 @@
     <header>
       <div class="Header_innerBlock">
         <div class="HeaderLogo_Block">
-          <a th:href="@{/}">
+          <a th:href="@{/static}">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 71 24" class="velogLogo"
                  data-testid="velog-logo" width="74" height="26">
               <path fill="currentColor"
@@ -51,13 +51,13 @@
                   <a th:href="@{'/@' + ${signedIn.getDomain()} + '/posts'}">내 벨로그</a>
                 </li>
                 <li>
-                  <a th:href="@{/#}">임시 글</a>
+                  <a th:href="@{/static}">임시 글</a>
                 </li>
                 <li>
-                  <a th:href="@{/#}">읽기 목록</a>
+                  <a th:href="@{/static}">읽기 목록</a>
                 </li>
                 <li>
-                  <a th:href="@{/#}">설정</a>
+                  <a th:href="@{/static}">설정</a>
                 </li>
                 <li>
                   <a href="#" class="logout-button">로그아웃</a>
@@ -90,7 +90,7 @@
             </svg>
             <span>최신</span>
           </a>
-          <a href="/#" th:class="${feed} ? 'HomeTab_active' : 'HomeTab_non_active'">
+          <a href="/static#" th:class="${feed} ? 'HomeTab_active' : 'HomeTab_non_active'">
             <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em"
                  xmlns="http://www.w3.org/2000/svg">
               <path fill="none" d="M0 0h24v24H0z"></path>
