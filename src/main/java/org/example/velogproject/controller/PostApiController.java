@@ -8,16 +8,13 @@ import org.example.velogproject.dto.PostPublishDto;
 import org.example.velogproject.jwt.util.JwtTokenizer;
 import org.example.velogproject.service.PostService;
 import org.example.velogproject.service.UserService;
-import org.springframework.beans.factory.annotation.Value;
+import org.example.velogproject.util.PostUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,9 +23,7 @@ public class PostApiController {
     private final UserService userService;
     private final PostService postService;
     private final JwtTokenizer jwtTokenizer;
-
-    @Value("${app.upload.dir}")
-    private String uploadDir;
+    private final PostUtil postUtil;
 
     // 새로 생성하는 게시글 임시 저장 - permitAll x
     @PostMapping("/first-temporary-save")
@@ -44,7 +39,7 @@ public class PostApiController {
                 String writeOrPublish = post.getThumbnailImage();
                 Post createdPost = postService.savePostFirstTemporarily(post);
 
-                String redirectUrl = setRedirectUrl(writeOrPublish, createdPost.getId());
+                String redirectUrl = postUtil.setRedirectUrl(writeOrPublish, createdPost.getId());
                 return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
             } else {
                 return ResponseEntity.badRequest().body("User not found");
@@ -58,18 +53,11 @@ public class PostApiController {
     @PutMapping("/temporary-save")
     public ResponseEntity<?> savePostTemporarily(@RequestBody Post post) {
         try {
-            // description 설정 부분
-            if (post.getContent().length() > 147) {
-                post.setDescription(post.getContent().substring(0, 147) + "...");
-            } else {
-                post.setDescription(post.getContent());
-            }
-
-            // 기존 게시글 업데이트
-            Post updatedPost = postService.updatePostTemporarily(post);
+            post.setDescription(postUtil.generateDescription(post.getContent()));
+            Post updatedPost = postService.updatePostTemporarily(post); // 기존 게시글 업데이트
 
             // 임시저장에 사용하지 않는 String 값을 이용
-            String redirectUrl = setRedirectUrl(post.getThumbnailImage(), updatedPost.getId());
+            String redirectUrl = postUtil.setRedirectUrl(post.getThumbnailImage(), updatedPost.getId());
             return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
 
         } catch (Exception e) {
@@ -81,11 +69,8 @@ public class PostApiController {
     @PostMapping("/upload-image")
     public ResponseEntity<?> uploadImage(@RequestParam("image") MultipartFile file) {
         try {
-            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            String filePath = uploadDir + "post_image/" + fileName;
-
-            File destination = new File(filePath);
-            file.transferTo(destination);
+            String fileName = postUtil.generateFileName(file.getOriginalFilename());
+            postUtil.saveFile(file, fileName, "post_image/");
 
             // WebConfig 에서 설정한 리소스 핸들러 경로를 사용
             String imageUrl = "/post_image/" + fileName;
@@ -100,11 +85,7 @@ public class PostApiController {
     public ResponseEntity<?> uploadThumbnail(@RequestParam("thumbnail") MultipartFile file,
                                              @RequestParam("postId") Long postId) {
         try {
-            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            String filePath = uploadDir + "thumbnail_image/" + fileName;
-
-            File destination = new File(filePath);
-            file.transferTo(destination);
+            String fileName = postUtil.uploadThumbnail(file);
             postService.savePostThumbnail(fileName, postId);
 
             String redirectUrl = "/publish?id=" + postId;
@@ -123,11 +104,8 @@ public class PostApiController {
             postService.deleteExistingThumbnail(postId);
 
             // 새 썸네일 업로드
-            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            String filePath = uploadDir + "thumbnail_image/" + fileName;
-
-            File destination = new File(filePath);
-            file.transferTo(destination);
+            String fileName = postUtil.generateFileName(file.getOriginalFilename());
+            postUtil.saveFile(file, fileName, "thumbnail_image/");
 
             // DB 업데이트
             postService.savePostThumbnail(fileName, postId);
@@ -168,14 +146,26 @@ public class PostApiController {
         return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
     }
 
-    // 임시저장 후 redirectUrl 세팅
-    private String setRedirectUrl(String str, Long postId) {
-        if (str.equals("justTemp")) {
-            return "/write?id=" + postId;
-        } else if (str.equals("forPublish")) {
-            return "/publish?id=" + postId;
-        }
+    // 게시글 삭제
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable Long postId) {
+        try {
+            Post post = postService.getPostById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
-        return "/error";
+            // 게시글 내용에서 이미지 파일 경로 추출
+            List<String> imagePaths = postUtil.extractImagePaths(post.getContent());
+
+            // 로컬에서 이미지 파일 삭제
+            for (String imagePath : imagePaths) {
+                postUtil.deleteImageFile("post_image/" + imagePath);
+            }
+            // 로컬에서 썸네일 삭제 및 DB 에서 게시글 삭제
+            postService.deleteExistingThumbnail(postId);
+            postService.deletePost(postId);
+
+            return ResponseEntity.ok(Map.of("success", true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "error", e.getMessage()));
+        }
     }
 }

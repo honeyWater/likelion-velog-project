@@ -75,6 +75,10 @@ a:-webkit-any-link {
     color: #868E96;
 }
 
+.postInfoLine_right1 button:hover {
+    color: #495057;
+}
+
 .postInfoLine_right1 button a {
     color: #868E96;
     text-decoration: none;
@@ -276,3 +280,89 @@ a:-webkit-any-link {
     margin-top: 2.5rem;
 }
 
+/* 모달 버튼 css */
+.modal_block {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 60;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+}
+
+.modal_wrapper {
+    width: 25rem;
+    border-radius: 4px;
+    background: #fff;
+    padding: 2rem 1.5rem;
+    box-shadow: rgba(0, 0, 0, 0.09) 0 2px 12px 0;
+}
+
+.deletePost_modal h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #212529;
+    line-height: 1.5;
+    font-weight: bold;
+}
+
+.delete_message {
+    line-height: 1.5;
+    font-size: 1rem;
+    color: #495057;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    white-space: pre-wrap;
+}
+
+.delete_buttonArea {
+    margin-top: 2rem;
+    display: flex;
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+}
+
+.cancel_button {
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background: none;
+    color: #12B886;
+    border-radius: 4px;
+    padding: 0 1.25rem;
+    height: 2rem;
+    font-size: 1rem;
+}
+
+.deletePost_modal .delete_buttonArea button + button {
+    margin-left: 0.75rem;
+}
+
+.confirm_button {
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background: #12B886;
+    color: #fff;
+    border-radius: 4px;
+    padding: 0px 1.25rem;
+    height: 2rem;
+    font-size: 1rem;
+}

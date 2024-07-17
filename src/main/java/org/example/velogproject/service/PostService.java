@@ -245,4 +245,10 @@ public class PostService {
             throw new RuntimeException("게시글을 찾을 수 없습니다: " + publishDto.getId());
         }
     }
+
+    // 게시글 삭제
+    @Transactional
+    public void deletePost(Long postId){
+        postRepository.deleteById(postId);
+    }
 }

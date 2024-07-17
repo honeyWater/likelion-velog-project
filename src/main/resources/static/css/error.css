@@ -63,3 +63,13 @@ body {
     height: 2.5rem;
     font-size: 1.125rem;
 }
+
+a {
+    color: #fff;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #fff;
+    text-decoration: none;
+}
