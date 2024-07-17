@@ -8,6 +8,19 @@ document.addEventListener("DOMContentLoaded", function () {
     fileInput.style.display = 'none';
     document.body.appendChild(fileInput);
 
+    // 디바운스 함수
+    function debounce(func, wait) {
+        let timeout;
+        return function executeFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
     // SimpleMDE 초기화
     window.simplemde = new SimpleMDE({
         element: document.getElementById("content"),
@@ -43,8 +56,11 @@ document.addEventListener("DOMContentLoaded", function () {
         preview.innerHTML = simplemde.markdown(simplemde.value());
     }
 
+    // 디바운스된 미리보기 업데이트 함수
+    const debounceUpdatePreview = debounce(updatePreview, 300);
+
     // 에디터 내용이 변경될 때마다 미리보기 업데이트
-    simplemde.codemirror.on("change", updatePreview);
+    simplemde.codemirror.on("change", debounceUpdatePreview);
 
     // 초기 미리보기 업데이트
     updatePreview();

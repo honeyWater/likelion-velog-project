@@ -6,6 +6,17 @@ function initializeEventListeners() {
     const yesPrivateButton = document.querySelector('.yes_private');
     const publishButton = document.querySelector('.real_publish');
 
+    // description 글자 수 표시
+    const description = document.getElementById('description');
+    const countText = document.querySelector('.count_text');
+    function updateCharCount() {
+        const count = description.value.length;
+        countText.textContent = `${count} / 150`;
+    }
+    description.addEventListener('input', updateCharCount);
+    // 초기 로드 시 글자 수 표시
+    updateCharCount();
+
     if (thumbnailUpload) {
         thumbnailUpload.addEventListener('change', handleThumbnailUpload);
     }

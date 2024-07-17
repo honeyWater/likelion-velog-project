@@ -5,6 +5,7 @@
   <title th:text="${post.title}"></title>
   <link rel="shortcut icon" th:href="@{'/profile_image/favicon.ico'}" type="image/x-icon">
   <link rel="icon" th:href="@{'/profile_image/favicon.ico'}" type="image/x-icon">
+  <link rel="stylesheet" th:href="@{/css/publish-form.css}"/>
   <script src="/js/publish-form.js"></script>
 </head>
 <body>
@@ -44,7 +45,8 @@
             <div class="post_description">
               <h4 th:text="${post.title}"></h4>
               <textarea name="description" th:text="${post.description}" th:value="${post.description}"
-                        placeholder="당신의 포스트를 짧게 소개해보세요."></textarea>
+                        id="description" placeholder="당신의 포스트를 짧게 소개해보세요." maxlength="150"></textarea>
+              <div class="count_text"></div>
             </div>
           </div>
         </section>
@@ -78,7 +80,7 @@
             <div class="url_contents">
               <div class="url_contents_wrapper">
                 <div class="url_domain" th:text="'/@' + ${domain} + '/'"></div>
-                <input class="slug_input" name="slug" th:text="${post.slug}" th:value="${post.slug}">
+                <input class="slug_input" name="slug" th:value="${post.slug}">
               </div>
             </div>
           </section>
