@@ -106,7 +106,7 @@
         </div>
         <!-- #, ##, ### 리모콘 div -->
       </div>
-      <img class="post_detail_thumbnail" th:if="${post.thumbnailImage != null}"
+      <img class="post_detail_thumbnail" th:if="${post.thumbnailImage != null and post.thumbnailImage != ''}"
            th:src="@{'/thumbnail_image/' + ${post.thumbnailImage}}" alt="post-thumbnail">
       <!-- 게시글 내 가장 맨 위에 있는 이미지, 썸네일로 사용될수도 있음 -->
     </div>

@@ -8,9 +8,11 @@ import org.example.velogproject.dto.PostPublishDto;
 import org.example.velogproject.repository.PostRepository;
 import org.example.velogproject.util.CommonUtil;
 import org.example.velogproject.util.SlugUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +24,9 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final CommonUtil commonUtil;
+
+    @Value("${app.upload.dir}")
+    private String uploadDir;
 
     // 게시글 List<Post> -> List<PostCardDto>
     public List<PostCardDto> toPostCardDto(List<Post> posts) {
@@ -112,9 +117,9 @@ public class PostService {
 
     // id로 게시글 조회 - PostPublishDto
     @Transactional(readOnly = true)
-    public PostPublishDto getPostPublishDtoById(Long id){
+    public PostPublishDto getPostPublishDtoById(Long id) {
         Optional<Post> existedPost = postRepository.findById(id);
-        if (existedPost.isPresent()){
+        if (existedPost.isPresent()) {
             Post post = existedPost.get();
             return PostPublishDto.builder()
                 .id(post.getId())
@@ -192,20 +197,40 @@ public class PostService {
 
     // 썸네일 업로드 저장
     @Transactional
-    public void savePostThumbnail(String thumbnail, Long id){
+    public void savePostThumbnail(String thumbnail, Long id) {
         Optional<Post> post = getPostById(id);
-        if (post.isPresent()){
+        if (post.isPresent()) {
             Post existedPost = post.get();
             existedPost.setThumbnailImage(thumbnail);
             postRepository.save(existedPost);
         }
     }
 
+    // 기존 썸네일 로컬에서 파일 제거
+    @Transactional
+    public void deleteExistingThumbnail(Long postId) {
+        Post post = getPostById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        if (post.getThumbnailImage() != null && !post.getThumbnailImage().isEmpty()) {
+            File file = new File(uploadDir + "thumbnail_image/" + post.getThumbnailImage());
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+    }
+
+    // 썸네일 삭제
+    @Transactional
+    public void removePostThumbnail(Long postId){
+        Post post = getPostById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        post.setThumbnailImage(null);
+        postRepository.save(post);
+    }
+
     // 게시글 출간
     @Transactional
-    public Post publishPost(PostPublishDto publishDto){
+    public Post publishPost(PostPublishDto publishDto) {
         Optional<Post> existedPost = getPostById(publishDto.getId());
-        if (existedPost.isPresent()){
+        if (existedPost.isPresent()) {
             Post postToUpdate = existedPost.get();
 
             // 출간 시 필요한 업데이트 수행

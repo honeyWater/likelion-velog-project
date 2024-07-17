@@ -20,9 +20,10 @@
           <div class="left_content">
             <div class="if_thumbnail_exist" th:if="${post.thumbnailImage != null and !post.thumbnailImage.isEmpty()}">
               <div class="thumbnail_actions">
-                <button>재업로드</button>
+                <input type="file" id="reuploadInput" style="display: none;" accept="image/*">
+                <button class="reuploadButton">재업로드</button>
                 <div class="middledot"></div>
-                <button>제거</button>
+                <button class="removeButton">제거</button>
               </div>
             </div>
             <div class="post_thumbnail">

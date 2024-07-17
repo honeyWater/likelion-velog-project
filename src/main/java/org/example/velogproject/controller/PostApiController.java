@@ -114,6 +114,46 @@ public class PostApiController {
         }
     }
 
+    // 썸네일 재업로드 처리
+    @PostMapping("/reupload-thumbnail")
+    public ResponseEntity<?> reuploadThumbnail(@RequestParam("thumbnail") MultipartFile file,
+                                               @RequestParam("postId") Long postId) {
+        try {
+            // 기존 썸네일 파일 삭제
+            postService.deleteExistingThumbnail(postId);
+
+            // 새 썸네일 업로드
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            String filePath = uploadDir + "thumbnail_image/" + fileName;
+
+            File destination = new File(filePath);
+            file.transferTo(destination);
+
+            // DB 업데이트
+            postService.savePostThumbnail(fileName, postId);
+
+            String redirectUrl = "/publish?id=" + postId;
+            return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body("썸네일 재업로드에 실패했습니다.");
+        }
+    }
+
+    // 썸네일 삭제 (로컬에서 파일 삭제 및 DB에서 null 처리)
+    @PostMapping("/remove-thumbnail")
+    public ResponseEntity<?> removeThumbnail(@RequestBody Map<String, Long> body) {
+        Long postId = body.get("postId");
+        try {
+            postService.deleteExistingThumbnail(postId);
+            postService.removePostThumbnail(postId);
+
+            String redirectUrl = "/publish?id=" + postId;
+            return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("썸네일 삭제에 실패했습니다.");
+        }
+    }
+
     // 게시글 실제 출간
     @PostMapping("/save")
     public ResponseEntity<?> publishPost(@RequestBody PostPublishDto publishDto) {

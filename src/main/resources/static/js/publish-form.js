@@ -1,6 +1,10 @@
 let inPrivate = false; // 전역 변수로 선언
 
 function initializeEventListeners() {
+    const reuploadButton = document.querySelector('.reuploadButton');
+    const removeButton = document.querySelector('.removeButton');
+    const reuploadInput = document.getElementById('reuploadInput');
+
     const thumbnailUpload = document.getElementById('thumbnailUpload');
     const noPrivateButton = document.querySelector('.no_private');
     const yesPrivateButton = document.querySelector('.yes_private');
@@ -19,6 +23,20 @@ function initializeEventListeners() {
 
     if (thumbnailUpload) {
         thumbnailUpload.addEventListener('change', handleThumbnailUpload);
+    }
+
+    if (reuploadButton){
+        reuploadButton.addEventListener('click', function() {
+            reuploadInput.click();
+        });
+    }
+
+    if (reuploadInput) {
+        reuploadInput.addEventListener('change', handleThumbnailReupload);
+    }
+
+    if (removeButton) {
+        removeButton.addEventListener('click', handleThumbnailRemove);
     }
 
     if (noPrivateButton && yesPrivateButton) {
@@ -66,6 +84,60 @@ function handleThumbnailUpload(event) {
             })
             .catch(error => console.error('Error: ', error));
     }
+}
+
+function handleThumbnailReupload(event) {
+    const file = event.target.files[0];
+    const postId = document.querySelector('input[name="postId"]').value;
+
+    if (file) {
+        const formData = new FormData();
+        formData.append('thumbnail', file);
+        formData.append('postId', postId);
+
+        fetch('/api/posts/reupload-thumbnail', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if(data.redirectUrl){
+                    window.location.href = data.redirectUrl;
+                } else {
+                    console.error('No redirect URL provided');
+                    alert('썸네일 재업로드는 완료되었지만 리다이렉트 URL이 없습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error: ', error);
+                alert('썸네일 업데이트 중 오류가 발생했습니다.');
+            });
+    }
+}
+
+function handleThumbnailRemove() {
+    const postId = document.querySelector('input[name="postId"]').value;
+
+    fetch('/api/posts/remove-thumbnail', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ postId: postId })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl;
+                console.log('썸네일이 성공적으로 제거되었습니다.');
+            } else {
+                console.log('썸네일 제거에 실패했습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Error: ', error);
+            alert('썸네일 제거 중 오류가 발생했습니다.');
+        });
 }
 
 function handlePublish(e) {
