@@ -251,4 +251,10 @@ public class PostService {
     public void deletePost(Long postId){
         postRepository.deleteById(postId);
     }
+
+    // userId 로 임시 글 목록 추출
+    @Transactional(readOnly = true)
+    public List<Post> getNotPublishedPostsByUserId(Long userId){
+        return postRepository.findByUserIdAndPublishStatusFalse(userId);
+    }
 }

@@ -181,4 +181,21 @@ public class PostController {
         model.addAttribute("post", postService.getPostPublishDtoById(id));
         return "posts/publish-form";
     }
+
+    // 임시 글 목록
+    @GetMapping("/saves")
+    public String getTemporaryPosts(HttpServletRequest request, Model model){
+        // 로그인한 유저인지를 판별
+        User loginUser = addSignedInUserToModel(request, model);
+        if (loginUser == null){
+            log.info("로그인하지 않은 유저가 임시 글 목록에 접근합니다.");
+            return "redirect:/error";
+        }
+
+        // 해당 유저의 id로 임시글 조회
+        List<Post> posts = postService.getNotPublishedPostsByUserId(loginUser.getId());
+        model.addAttribute("posts", posts);
+
+        return "posts/temp-post";
+    }
 }

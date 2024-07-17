@@ -16,7 +16,7 @@
     <header>
       <div class="Header_innerBlock">
         <div class="HeaderLogo_Block">
-          <a th:href="@{/static}">
+          <a th:href="@{/}">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 71 24" class="velogLogo"
                  data-testid="velog-logo" width="74" height="26">
               <path fill="currentColor"
@@ -51,7 +51,7 @@
                   <a th:href="@{'/@' + ${signedIn.getDomain()} + '/posts'}">내 벨로그</a>
                 </li>
                 <li>
-                  <a th:href="@{/static}">임시 글</a>
+                  <a th:href="@{/saves}">임시 글</a>
                 </li>
                 <li>
                   <a th:href="@{/static}">읽기 목록</a>
