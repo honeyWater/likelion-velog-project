@@ -219,7 +219,7 @@
     padding: 0 0 0 1rem;
     border-radius: 4px;
     cursor: pointer;
-    border: solid 1px #20C997;
+    border: solid 1px transparent;
     color: #20C997;
 }
 
@@ -254,6 +254,7 @@
     border-radius: 4px;
     cursor: pointer;
     border: 1px solid transparent;
+    margin-left: 16px;
 }
 
 .yes_private .yes_private_description {
@@ -263,6 +264,10 @@
     justify-content: center;
     -webkit-box-align: center;
     align-items: center;
+}
+
+.active {
+    border-color: #20C997;
 }
 
 .select_url {
