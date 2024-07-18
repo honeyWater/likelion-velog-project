@@ -226,11 +226,11 @@
                         </div>
                       </div>
                       <div class="reply_actions" th:if="${signedIn.id != null and signedIn.id == reply.user.id}">
-                        <span>수정</span>
-                        <span>삭제</span>
+                        <span th:onclick="'editReply(\'' + ${reply.id} + '\')'">수정</span>
+                        <span th:onclick="'deleteReply(\'' + ${reply.id} + '\')'">삭제</span>
                       </div>
                     </div>
-                    <div class="reply_comment_block">
+                    <div class="reply_comment_block" th:id="'reply-content-' + ${reply.id}">
                       <div class="reply_comment_wrapper">
                         <p th:text="${reply.comment}"></p>
                       </div>

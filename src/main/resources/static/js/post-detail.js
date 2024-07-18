@@ -306,6 +306,74 @@ function submitReply(commentId) {
     cancelReply(commentId);
 }
 
+function editReply(replyId) {
+    const contentBlock = document.querySelector(`#reply-content-${replyId}`);
+    const originalContent = contentBlock.querySelector('p').innerText;
+
+    contentBlock.innerHTML = `
+        <div class="reply_update_wrapper">
+          <textarea class="reply_update_input" placeholder="답글을 작성하세요.">${originalContent}</textarea>
+          <div class="cancel_update_wrapper">
+            <button class="update_cancel" onclick="cancelReplyEdit(${replyId}, '${originalContent.replace(/'/g, "\\'")}')">취소</button>
+            <button class="do_update" onclick="updateReply(${replyId})">답글 수정</button>
+          </div>
+        </div>
+    `;
+}
+
+function cancelReplyEdit(replyId, originalContent) {
+    const contentBlock = document.querySelector(`#reply-content-${replyId}`);
+    contentBlock.innerHTML = `<p>${originalContent}</p>`;
+}
+
+function updateReply(replyId) {
+    const updatedContent = document.querySelector(
+        `#reply-content-${replyId} .reply_update_input`
+    ).value;
+
+    fetch(`/api/replies/${replyId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({comment: updatedContent})
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl;
+            } else {
+                console.error('No redirect URL provided');
+                alert('답글이 수정되었지만 리다이렉트 URL이 없습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('답글 수정 중 오류가 발생했습니다.');
+        });
+}
+
+function deleteReply(replyId) {
+    if (confirm('답글을 정말로 삭제하시겠습니까?')) {
+        fetch(`/api/replies/${replyId}`, {
+            method: 'DELETE',
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    console.error('No redirect URL provided');
+                    alert('답글이 삭제되었지만 리다이렉트 URL이 없습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('답글 삭제 중 오류가 발생했습니다.');
+            });
+    }
+}
+
 function showNewReplyForm(commentId) {
     const commentBlock = document.querySelector(`#comment-${commentId}`);
     if (!commentBlock) {

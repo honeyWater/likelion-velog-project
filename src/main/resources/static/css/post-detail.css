@@ -532,7 +532,7 @@ a:-webkit-any-link {
     outline: none;
     border: 1px solid #F1F3F5;
     margin-bottom: 1.5rem;
-    width: 100%;
+    width: 95%;
     border-radius: 4px;
     min-height: 6.125rem;
     font-size: 1rem;
@@ -646,6 +646,21 @@ a:-webkit-any-link {
     padding: 0px 1.25rem;
     height: 2rem;
     font-size: 1rem;
+}
+
+.reply_update_input {
+    resize: none;
+    padding: 1rem 1rem 1.5rem;
+    outline: none;
+    border: 1px solid #F1F3F5;
+    margin-bottom: 1.5rem;
+    width: 95%;
+    border-radius: 4px;
+    min-height: 6.125rem;
+    font-size: 1rem;
+    color: #212529;
+    line-height: 1.75;
+    background: #fff;
 }
 
 /* 모달 버튼 css */
