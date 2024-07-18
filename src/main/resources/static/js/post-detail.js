@@ -17,18 +17,20 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     `;
 
-    deleteButton.addEventListener('click', function() {
-        document.body.appendChild(modalContainer);
-    });
+    if (deleteButton) {
+        deleteButton.addEventListener('click', function () {
+            document.body.appendChild(modalContainer);
+        });
+    }
 
-    const closeModal = function() {
+    const closeModal = function () {
         document.body.removeChild(modalContainer);
     };
 
     modalContainer.querySelector('.modal_overlay').addEventListener('click', closeModal);
     modalContainer.querySelector('.cancel_button').addEventListener('click', closeModal);
 
-    modalContainer.querySelector('.confirm_button').addEventListener('click', function() {
+    modalContainer.querySelector('.confirm_button').addEventListener('click', function () {
         const postId = document.querySelector('input[name="postId"]').value;
         fetch(`/api/posts/delete/${postId}`, {
             method: 'DELETE',
@@ -59,4 +61,67 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     renderTags();
+
+    // 댓글 부분
+    document.querySelector('.comment_submit').addEventListener('click', function () {
+        const commentText = document.querySelector('.comment_input').value;
+        const postId = document.querySelector('input[name="postId"]').value;
+        const userId = document.getElementById('signedInUserId').value;
+        const username = document.getElementById('signedInUsername').value;
+        const domain = document.getElementById('signedInDomain').value;
+        const profileImage = document.getElementById('signedInProfileImage').value;
+        console.log('userId: ' + userId);
+        if (!userId) {
+            window.location.href = '/login';
+        }
+
+        fetch(`/api/posts/${postId}/comments`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                comment: commentText,
+                user: {
+                    id: userId,
+                    username: username,
+                    domain: domain,
+                    profileImage: profileImage
+                }
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    console.error('No redirect URL provided');
+                    alert('댓글 작성은 완료되었지만 리다이렉트 URL이 없습니다.');
+                }
+            })
+            .catch(error => console.error('Error: ', error));
+    });
 });
+
+// 댓글 삭제 함수
+function deleteComment(commentId) {
+    if (confirm('댓글을 정말로 삭제하시겠습니까?')) {
+        fetch(`/api/comments/${commentId}`, {
+            method: 'DELETE',
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    console.error('No redirect URL provided');
+                    alert('댓글이 삭제되었지만 리다이렉트 URL이 없습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('Error: ', error);
+                alert('댓글 삭제 중 오류가 발생했습니다.');
+            })
+    }
+}

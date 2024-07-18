@@ -15,7 +15,11 @@
   <script src="/js/post-detail.js"></script>
 </head>
 <body>
-<input type="hidden" name="postId" th:value="${post.getId()}">
+<input type="hidden" id="signedInUserId" th:value="${signedIn != null ? signedIn.id : ''}">
+<input type="hidden" id="signedInUsername" th:value="${signedIn != null ? signedIn.username : ''}">
+<input type="hidden" id="signedInDomain" th:value="${signedIn != null ? signedIn.domain : ''}">
+<input type="hidden" id="signedInProfileImage" th:value="${signedIn != null ? signedIn.profileImage : ''}">
+<input type="hidden" name="postId" th:value="${post.id}">
 <input type="hidden" name="tags" th:value="${tags}">
 <div class="responsive_main">
   <div class="HomeLayout_innerBlock">
@@ -111,7 +115,6 @@
       </div>
       <img class="post_detail_thumbnail" th:if="${post.thumbnailImage != null and post.thumbnailImage != ''}"
            th:src="@{'/thumbnail_image/' + ${post.thumbnailImage}}" alt="post-thumbnail">
-      <!-- 게시글 내 가장 맨 위에 있는 이미지, 썸네일로 사용될수도 있음 -->
     </div>
 
     <div class="post_content_block">
@@ -154,7 +157,7 @@
     </div>
 
     <div class="post_comment_block">
-      <h4 th:text="${post.getCommentCount()} + '개의 댓글'"></h4>
+      <h4 th:text="${post.getComments().size()} + '개의 댓글'"></h4>
       <div class="about_comment">
         <div class="comment_write">
           <textarea class="comment_input" placeholder="댓글을 작성하세요."></textarea>
@@ -162,9 +165,81 @@
             <button class="comment_submit">댓글 작성</button>
           </div>
         </div>
-        <div class="all_comment" th:if="${post.getCommentCount() != 0}">
-          <div class="comment_wrapper">
-            <!-- 부모 댓글 안에 자식 댓글 -->
+      </div>
+      <div class="all_comment" th:if="${comments != null and comments.size() != 0}">
+        <div class="comment_wrapper" th:each="comment : ${comments}">
+          <div class="parent_comment_wrapper" th:if="${comment.parentCommentId == null}">
+            <div class="who_write_comment">
+              <div class="profile">
+                <a th:href="@{'/@' + ${comment.user.domain} + 'posts'}" class="comment_profile_link">
+                  <img th:src="@{'/profile_image/' + ${comment.user.profileImage}}" alt="comment-user-thumbnail">
+                </a>
+                <div class="comment_info">
+                  <div class="comment_username">
+                    <a class="comment_profile_link" th:href="@{'/@' + ${comment.user.domain} + 'posts'}"
+                       th:text="${comment.user.username}"></a>
+                  </div>
+                  <div class="comment_when" th:text="${#temporals.format(comment.createdAt, 'yyyy년 MM월 dd일')}"></div>
+                </div>
+              </div>
+              <div class="actions" th:if="${signedIn.id != null and signedIn.id == comment.user.id}">
+                <span>수정</span>
+                <span th:onclick="'deleteComment(\'' + ${comment.id} + '\')'">삭제</span>
+              </div>
+            </div>
+            <div class="comment_content_block">
+              <div class="comment_content_wrapper">
+                <div class="comment_content">
+                  <div class="real_comment_content">
+                    <p th:text="${comment.comment}"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--              <div class="reply_block">-->
+            <!--                <div class="reply_button">-->
+            <!--                  <svg width="12" height="12" fill="none" viewBox="0 0 12 12">-->
+            <!--                    <path fill="currentColor" d="M5.5 2.5h1v3h3v1h-3v3h-1v-3h-3v-1h3v-3z"></path>-->
+            <!--                    <path fill="currentColor" fill-rule="evenodd"-->
+            <!--                          d="M1 0a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H1zm10 1H1v10h10V1z"-->
+            <!--                          clip-rule="evenodd"></path>-->
+            <!--                  </svg>-->
+            <!--                  <span>답글 달기</span>-->
+            <!--                </div>-->
+            <!--                <div class="reply_wrapper">-->
+            <!--                  <div class="reply_content">-->
+            <!--                    <div class="reply_content_wrapper">-->
+            <!--                      <div class="reply_profile">-->
+            <!--                        <a th:href="" class="reply_profile_link">-->
+            <!--                          <img th:src="" alt="reply-user-thumbnail">-->
+            <!--                        </a>-->
+            <!--                        <div class="reply_info">-->
+            <!--                          <div class="reply_username">-->
+            <!--                            <a class="reply_profile_link" th:href=""-->
+            <!--                               th:text=""></a>-->
+            <!--                          </div>-->
+            <!--                          <div class="reply_when" th:text=""></div>-->
+            <!--                        </div>-->
+            <!--                      </div>-->
+            <!--                      <div class="actions">-->
+            <!--                        <span>수정</span>-->
+            <!--                        <span>삭제</span>-->
+            <!--                      </div>-->
+            <!--                    </div>-->
+            <!--                    <div class="reply_comment_block">-->
+            <!--                      <div class="reply_comment_wrapper">-->
+            <!--                        <div class="reply_comment">-->
+            <!--                          <div class="real_reply">-->
+            <!--                            <p th:text=""></p>-->
+            <!--                          </div>-->
+            <!--                        </div>-->
+            <!--                      </div>-->
+            <!--                    </div>-->
+            <!--                  </div>-->
+            <!--                  <div class="reply_gap"></div>-->
+            <!--                  <button class="do_reply">답글 작성하기</button>-->
+            <!--                </div>-->
+            <!--              </div>-->
           </div>
         </div>
       </div>

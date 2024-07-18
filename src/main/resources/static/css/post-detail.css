@@ -280,6 +280,93 @@ a:-webkit-any-link {
     margin-top: 2.5rem;
 }
 
+.parent_comment_wrapper {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.who_write_comment {
+    margin-bottom: 1.5rem;
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    align-items: center;
+}
+
+.who_write_comment .profile {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+}
+
+.comment_profile_link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.who_write_comment .profile img {
+    width: 3.375rem;
+    height: 3.375rem;
+    display: block;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.who_write_comment .profile .comment_info {
+    margin-left: 1rem;
+    line-height: 1;
+}
+
+.comment_info .comment_username {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #212529;
+}
+
+.comment_info .comment_username .comment_profile_link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.comment_when {
+    margin-top: 0.5rem;
+    color: #868E96;
+    font-size: 0.875rem;
+}
+
+.who_write_comment .actions {
+    font-size: 0.875rem;
+    color: #868E96;
+}
+
+.actions span {
+    cursor: pointer;
+}
+
+.actions span:hover {
+    text-decoration: underline;
+}
+
+.comment_content {
+    font-size: 1.125rem;
+    color: #212529;
+    transition: color 0.125s ease-in 0s;
+    line-height: 1.7;
+    letter-spacing: -0.004em;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+.real_comment_content p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    unicode-bidi: isolate;
+}
+
+
+
 /* 모달 버튼 css */
 .modal_overlay {
     position: fixed;
@@ -405,3 +492,4 @@ a:-webkit-any-link {
 .tag:hover {
     background-color: #e9ecef;
 }
+

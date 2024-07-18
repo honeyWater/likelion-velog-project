@@ -7,9 +7,11 @@ import org.example.velogproject.domain.Post;
 import org.example.velogproject.domain.Tag;
 import org.example.velogproject.domain.User;
 import org.example.velogproject.dto.BlogUserDto;
+import org.example.velogproject.dto.CommentDto;
 import org.example.velogproject.dto.PostCardDto;
 import org.example.velogproject.dto.TagGroupDto;
 import org.example.velogproject.jwt.util.JwtTokenizer;
+import org.example.velogproject.service.CommentService;
 import org.example.velogproject.service.PostService;
 import org.example.velogproject.service.TagService;
 import org.example.velogproject.service.UserService;
@@ -29,6 +31,7 @@ public class PostController {
     private final UserService userService;
     private final PostService postService;
     private final TagService tagService;
+    private final CommentService commentService;
 
     // 로그인한 유저를 model 에 추가하는 메서드
     private User addSignedInUserToModel(HttpServletRequest request, Model model) {
@@ -165,14 +168,15 @@ public class PostController {
             .collect(Collectors.joining(","));
         model.addAttribute("tags", tags);
 
-//        Comment comment = (Comment) post.getComments();
-
         // 로그인한 유저인지를 판별
         User loginUser = addSignedInUserToModel(request, model);
         // 해당 게시글의 주인이 로그인한 유저라면 수정, 삭제가 가능하도록
         if (loginUser != null && loginUser.getId().equals(userByDomain.getId())) {
             model.addAttribute("sameUser", "sameUser");
         }
+
+        List<CommentDto> comments = commentService.getCommentByPostId(post.getId());
+        model.addAttribute("comments", comments);
 
         model.addAttribute("userByDomain", userByDomain);
         model.addAttribute("post", post);
