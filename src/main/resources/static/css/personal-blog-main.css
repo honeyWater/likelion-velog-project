@@ -284,6 +284,37 @@ html {
     padding-left: 0;
 }
 
+.each_tag + .each_tag {
+    margin-top: 4px;
+}
+
+.each_tag {
+    color: #212529;
+    font-size: 14px;
+    line-height: 1.5;
+    display: flex;
+}
+
+.go_to_tag {
+    max-width: 65%;
+    color: inherit;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.go_to_tag:hover {
+    text-decoration: underline;
+}
+
+.each_tag span {
+    margin-left: 8px;
+    color: #868E96;
+    font-weight: 400;
+}
+
 .FlatPostCard_block:first-child {
     padding-top: 0;
 }

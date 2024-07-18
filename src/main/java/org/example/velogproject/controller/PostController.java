@@ -8,8 +8,10 @@ import org.example.velogproject.domain.Tag;
 import org.example.velogproject.domain.User;
 import org.example.velogproject.dto.BlogUserDto;
 import org.example.velogproject.dto.PostCardDto;
+import org.example.velogproject.dto.TagGroupDto;
 import org.example.velogproject.jwt.util.JwtTokenizer;
 import org.example.velogproject.service.PostService;
+import org.example.velogproject.service.TagService;
 import org.example.velogproject.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +28,7 @@ public class PostController {
     private final JwtTokenizer jwtTokenizer;
     private final UserService userService;
     private final PostService postService;
+    private final TagService tagService;
 
     // 로그인한 유저를 model 에 추가하는 메서드
     private User addSignedInUserToModel(HttpServletRequest request, Model model) {
@@ -119,9 +122,13 @@ public class PostController {
             posts = postService.getPublishedPostsAlsoInPrivate(userByDomainId);
         }
 
+        // 도메인 유저의 태그이름과 수를 그룹화해서 가져옴
+        List<TagGroupDto> tags = tagService.getTagsByUserId(userByDomainId);
+
         model.addAttribute("domain", domain);
         model.addAttribute("posts", posts);
         model.addAttribute("userByDomain", userByDomain);
+        model.addAttribute("tags", tags);
 
         return "posts/personal-blog-main";
     }

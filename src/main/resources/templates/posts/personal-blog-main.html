@@ -134,7 +134,10 @@
             <aside class="VelogTagVerticalList_block">
               <div class="VelogTagVerticalList_title">태그 목록</div>
               <ul>
-                <!-- 태그 목록과 count 수 -->
+                <li class="each_tag" th:each="tag : ${tags}">
+                  <a th:href="@{'/@' + ${domain} + '/posts?tag=' + ${tag}}" th:text="${tag.tagName}" class="go_to_tag"></a>
+                  <span th:text="'(' + ${tag.count} + ')'"></span>
+                </li>
               </ul>
             </aside>
             <div class="FlatPostCardList_block">
