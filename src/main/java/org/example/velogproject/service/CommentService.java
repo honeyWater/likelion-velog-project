@@ -47,7 +47,7 @@ public class CommentService {
         Comment parentComment = commentRepository.findById(parentId)
             .orElseThrow(() -> new RuntimeException("Parent comment not found"));
 
-        User user = userRepository.findById(replyDto.getId())
+        User user = userRepository.findById(replyDto.getUser().getId())
             .orElseThrow(() -> new RuntimeException("User not found"));
 
         Comment reply = new Comment();

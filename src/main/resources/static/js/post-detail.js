@@ -102,6 +102,25 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error('Error: ', error));
     });
+
+    // 페이지 로드 시 'n개의 답글', '답글 달기' 같은 원래 텍스트 저장
+    const replyTexts = document.querySelectorAll('.reply_text');
+    replyTexts.forEach(text => {
+        text.setAttribute('data-original-text', text.textContent);
+    });
+
+    // 답글 작성하기 버튼에 이벤트 리스너 추가
+    const newReplyButtons = document.querySelectorAll('.new_reply_button');
+    newReplyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const commentId = this.closest('.comment_wrapper').id.split('-')[1];
+            if (commentId) {
+                showNewReplyForm(commentId);
+            } else {
+                console.error('Could not find comment ID');
+            }
+        });
+    });
 });
 
 // 댓글 삭제 함수
@@ -133,10 +152,10 @@ function editComment(commentId) {
     contentBlock.innerHTML = `
         <div class="comment_update_wrapper">
           <textarea class="comment_update_input" placeholder="댓글을 작성하세요.">${originalContent}</textarea>
-            <div class="cancel_update_wrapper">
-                <button class="update_cancel" onclick="cancelEdit(${commentId}, '${originalContent}')">취소</button>
-                <button class="do_update" onclick="updateComment(${commentId})">댓글 수정</button>
-            </div>
+          <div class="cancel_update_wrapper">
+            <button class="update_cancel" onclick="cancelEdit(${commentId}, '${originalContent}')">취소</button>
+            <button class="do_update" onclick="updateComment(${commentId})">댓글 수정</button>
+          </div>
         </div>
     `
 }
@@ -180,3 +199,127 @@ function updateComment(commentId) {
             alert('댓글 수정 중 오류가 발생했습니다.');
         })
 }
+
+function toggleReplyForm(commentId) {
+    const commentBlock = document.querySelector(`#comment-${commentId}`);
+    const replyButton = commentBlock.querySelector('.reply_button');
+    const replyText = replyButton.querySelector('.reply_text');
+    const plusPath = replyButton.querySelector('.plus_path');
+    const minusPath = replyButton.querySelector('.minus_path');
+    const allReplyBlock = commentBlock.querySelector('.all_reply_block');
+    const replyWriteWrapper = commentBlock.querySelector('.reply_write_wrapper');
+    const newReplyButton = commentBlock.querySelector('.new_reply_button');
+
+    const hasReplies = allReplyBlock && allReplyBlock.querySelector('.each_reply_wrapper');
+
+    if (hasReplies) {
+        // 대댓글이 있는 경우
+        if (allReplyBlock.style.display === 'none' || allReplyBlock.style.display === '') {
+            allReplyBlock.style.display = 'block';
+            newReplyButton.style.display = 'block';  // 답글 작성하기 버튼 표시
+            replyText.textContent = '숨기기';
+            plusPath.style.display = 'none';
+            minusPath.style.display = 'block';
+        } else {
+            allReplyBlock.style.display = 'none';
+            newReplyButton.style.display = 'none';  // 답글 작성하기 버튼 숨김
+            replyText.textContent = replyText.getAttribute('data-original-text');
+            plusPath.style.display = 'block';
+            minusPath.style.display = 'none';
+        }
+    } else {
+        // 대댓글이 없는 경우
+        if (replyWriteWrapper.style.display === 'none' || replyWriteWrapper.style.display === '') {
+            replyWriteWrapper.style.display = 'block';
+            replyText.textContent = '숨기기';
+            plusPath.style.display = 'none';
+            minusPath.style.display = 'block';
+        } else {
+            replyWriteWrapper.style.display = 'none';
+            replyText.textContent = '답글 달기';
+            plusPath.style.display = 'block';
+            minusPath.style.display = 'none';
+        }
+    }
+}
+
+function cancelReply(commentId) {
+    const commentBlock = document.querySelector(`#comment-${commentId}`);
+    const replyWriteWrapper = commentBlock.querySelector('.reply_write_wrapper');
+    const newReplyButton = commentBlock.querySelector('.new_reply_button');
+    const replyButton = commentBlock.querySelector('.reply_button');
+    const replyText = replyButton.querySelector('.reply_text');
+    const plusPath = replyButton.querySelector('.plus_path');
+    const minusPath = replyButton.querySelector('.minus_path');
+
+    replyWriteWrapper.style.display = 'none';
+    replyWriteWrapper.querySelector('.reply_textarea').value = '';
+
+    const hasReplies = commentBlock.querySelector('.all_reply_block .each_reply_wrapper');
+    if (hasReplies) {
+        newReplyButton.style.display = 'block';
+    }
+
+    replyText.textContent = replyText.getAttribute('data-original-text') || '답글 달기';
+    plusPath.style.display = 'block';
+    minusPath.style.display = 'none';
+}
+
+function submitReply(commentId) {
+    const replyForm = document.getElementById('reply-form-' + commentId);
+    const replyContent = replyForm.querySelector('.reply_textarea').value;
+    const userId = document.getElementById('signedInUserId').value;
+    const username = document.getElementById('signedInUsername').value;
+    const domain = document.getElementById('signedInDomain').value;
+    const profileImage = document.getElementById('signedInProfileImage').value;
+
+    fetch('/api/comments/' + commentId + '/replies', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            comment: replyContent,
+            user: {
+                id: userId,
+                username: username,
+                domain: domain,
+                profileImage: profileImage
+            }
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl;
+            } else {
+                console.error('No redirect URL provided');
+                alert('대댓글이 등록되었지만 리다이렉트 URL이 없습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Error: ', error);
+            alert('답글 작성 중 오류가 발생했습니다.');
+        });
+
+    // 폼 숨기기 및 초기화
+    cancelReply(commentId);
+}
+
+function showNewReplyForm(commentId) {
+    const commentBlock = document.querySelector(`#comment-${commentId}`);
+    if (!commentBlock) {
+        console.error(`Comment block with id 'comment-${commentId}' not found`);
+        return;
+    }
+    const replyWriteWrapper = commentBlock.querySelector('.reply_write_wrapper');
+    const newReplyButton = commentBlock.querySelector('.new_reply_button');
+
+    if (replyWriteWrapper) {
+        replyWriteWrapper.style.display = 'block';
+    }
+    if (newReplyButton) {
+        newReplyButton.style.display = 'none';
+    }
+}
+

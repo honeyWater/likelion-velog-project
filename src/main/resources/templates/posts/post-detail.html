@@ -167,7 +167,7 @@
         </div>
       </div>
       <div class="all_comment" th:if="${comments != null and comments.size() != 0}">
-        <div class="comment_wrapper" th:each="comment : ${comments}">
+        <div class="comment_wrapper" th:each="comment : ${comments}" th:id="'comment-' + ${comment.id}">
           <div class="parent_comment_wrapper" th:if="${comment.parentCommentId == null}">
             <div class="who_write_comment">
               <div class="profile">
@@ -196,50 +196,62 @@
                 </div>
               </div>
             </div>
-            <!--              <div class="reply_block">-->
-            <!--                <div class="reply_button">-->
-            <!--                  <svg width="12" height="12" fill="none" viewBox="0 0 12 12">-->
-            <!--                    <path fill="currentColor" d="M5.5 2.5h1v3h3v1h-3v3h-1v-3h-3v-1h3v-3z"></path>-->
-            <!--                    <path fill="currentColor" fill-rule="evenodd"-->
-            <!--                          d="M1 0a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H1zm10 1H1v10h10V1z"-->
-            <!--                          clip-rule="evenodd"></path>-->
-            <!--                  </svg>-->
-            <!--                  <span>답글 달기</span>-->
-            <!--                </div>-->
-            <!--                <div class="reply_wrapper">-->
-            <!--                  <div class="reply_content">-->
-            <!--                    <div class="reply_content_wrapper">-->
-            <!--                      <div class="reply_profile">-->
-            <!--                        <a th:href="" class="reply_profile_link">-->
-            <!--                          <img th:src="" alt="reply-user-thumbnail">-->
-            <!--                        </a>-->
-            <!--                        <div class="reply_info">-->
-            <!--                          <div class="reply_username">-->
-            <!--                            <a class="reply_profile_link" th:href=""-->
-            <!--                               th:text=""></a>-->
-            <!--                          </div>-->
-            <!--                          <div class="reply_when" th:text=""></div>-->
-            <!--                        </div>-->
-            <!--                      </div>-->
-            <!--                      <div class="actions">-->
-            <!--                        <span>수정</span>-->
-            <!--                        <span>삭제</span>-->
-            <!--                      </div>-->
-            <!--                    </div>-->
-            <!--                    <div class="reply_comment_block">-->
-            <!--                      <div class="reply_comment_wrapper">-->
-            <!--                        <div class="reply_comment">-->
-            <!--                          <div class="real_reply">-->
-            <!--                            <p th:text=""></p>-->
-            <!--                          </div>-->
-            <!--                        </div>-->
-            <!--                      </div>-->
-            <!--                    </div>-->
-            <!--                  </div>-->
-            <!--                  <div class="reply_gap"></div>-->
-            <!--                  <button class="do_reply">답글 작성하기</button>-->
-            <!--                </div>-->
-            <!--              </div>-->
+            <div class="reply_block">
+              <div class="reply_button" th:onclick="'toggleReplyForm(\'' + ${comment.id} + '\')'">
+                <svg width="12" height="12" fill="none" viewBox="0 0 12 12" class="reply_svg">
+                  <path fill="currentColor" d="M5.5 2.5h1v3h3v1h-3v3h-1v-3h-3v-1h3v-3z" class="plus_path"></path>
+                  <path fill="currentColor" d="M9.5 6.5v-1h-7v1h7z" class="minus_path" style="display: none;"></path>
+                  <path fill="currentColor" fill-rule="evenodd"
+                        d="M1 0a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H1zm10 1H1v10h10V1z"
+                        clip-rule="evenodd"></path>
+                </svg>
+                <span class="reply_text" th:text="${comment.replies != null and comment.replies.size() > 0 ?
+                      comment.replies.size() + '개의 답글' : '답글 달기'}"></span>
+              </div>
+              <div class="all_reply_block" style="display: none;">
+                <div class="all_reply_wrapper">
+                  <div class="each_reply_wrapper" th:each="reply : ${comment.replies}">
+                    <div class="who_write_reply">
+                      <div class="reply_profile">
+                        <a class="reply_profile_link" th:href="@{'/@' + ${reply.user.domain}}">
+                          <img th:src="@{'/profile_image/' + ${reply.user.profileImage}}" alt="reply-user-thumbnail">
+                        </a>
+                        <div class="reply_info">
+                          <div class="reply_username">
+                            <a class="reply_username_link" th:href="@{'/@' + ${reply.user.domain}}"
+                               th:text="${reply.user.username}"></a>
+                          </div>
+                          <div class="reply_date"
+                               th:text="${#temporals.format(reply.createdAt, 'yyyy년 MM월 dd일')}"></div>
+                        </div>
+                      </div>
+                      <div class="reply_actions" th:if="${signedIn.id != null and signedIn.id == reply.user.id}">
+                        <span>수정</span>
+                        <span>삭제</span>
+                      </div>
+                    </div>
+                    <div class="reply_comment_block">
+                      <div class="reply_comment_wrapper">
+                        <p th:text="${reply.comment}"></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="gap"></div>
+                <button class="new_reply_button" style="display: none">답글 작성하기</button>
+              </div>
+              <div class="reply_write_wrapper" th:id="'reply-form-' + ${comment.id}" style="display: none;">
+                <div class="has_reply"></div>
+                <div class="reply_input_wrapper">
+                  <textarea class="reply_textarea" placeholder="댓글을 작성하세요."></textarea>
+                  <div class="reply_button_wrapper">
+                    <button class="reply_cancel_button" th:onclick="'cancelReply(\'' + ${comment.id} + '\')'">취소
+                    </button>
+                    <button class="do_reply" th:onclick="'submitReply(\'' + ${comment.id} + '\')'">댓글 작성</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

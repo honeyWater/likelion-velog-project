@@ -365,7 +365,288 @@ a:-webkit-any-link {
     unicode-bidi: isolate;
 }
 
+/* 대댓글 */
+.reply_block {
+    margin-top: 2rem;
+}
 
+.reply_button {
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    color: #12B886;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.reply_button svg {
+    margin-right: 0.5rem;
+}
+
+.reply_button span:hover {
+    color: #29ffbf;
+    text-decoration: underline;
+}
+
+.all_reply_block {
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    background-color: rgba(0, 0, 0, 0.016);
+    padding: 1.5rem;
+    border-radius: 4px;
+    margin-top: 1.3125rem;
+}
+
+.each_reply_wrapper {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.who_write_reply {
+    margin-bottom: 1.5rem;
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    align-items: center;
+}
+
+.who_write_reply .reply_profile {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+}
+
+.reply_profile_link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.reply_profile_link img {
+    width: 3.375rem;
+    height: 3.375rem;
+    display: block;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.reply_info {
+    margin-left: 1rem;
+    line-height: 1;
+}
+
+.reply_username {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #212529;
+}
+
+.reply_username_link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.reply_date {
+    margin-top: 0.5rem;
+    color: #868E96;
+    font-size: 0.875rem;
+}
+
+.reply_actions {
+    font-size: 0.875rem;
+    color: #868E96;
+}
+
+.reply_actions span {
+    cursor: pointer;
+}
+
+.reply_actions span:hover {
+    color: #29ffbf;
+    text-decoration: underline;
+}
+
+.gap {
+    width: 100%;
+    height: 1px;
+    background: #E9ECEF;
+    margin-bottom: 1.5rem;
+}
+
+.new_reply_button {
+    cursor: pointer;
+    height: 2.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #12B886;
+    display: flex;
+    outline: none;
+    color: #12B886;
+    width: 100%;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    font-weight: 600;
+    background: #fff;
+}
+
+.reply_comment_block {
+    font-size: 1.125rem;
+    color: #212529;
+    transition: color 0.125s ease-in 0s;
+    line-height: 1.7;
+    letter-spacing: -0.004em;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+.reply_comment_wrapper {
+    font-size: 1.125rem;
+    color: #212529;
+    transition: color 0.125s ease-in 0s;
+    line-height: 1.7;
+    letter-spacing: -0.004em;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+.reply_comment_wrapper p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0;
+    margin-inline-end: 0;
+    unicode-bidi: isolate;
+}
+
+.reply_write_wrapper {
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    background-color: rgba(0, 0, 0, 0.016);
+    padding: 1.5rem;
+    border-radius: 4px;
+}
+
+.reply_textarea {
+    resize: none;
+    padding: 1rem 1rem 1.5rem;
+    outline: none;
+    border: 1px solid #F1F3F5;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    border-radius: 4px;
+    min-height: 6.125rem;
+    font-size: 1rem;
+    color: #212529;
+    line-height: 1.75;
+    background: #fff;
+}
+
+.reply_input_wrapper > .reply_button_wrapper {
+    display: flex;
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+}
+
+.reply_cancel_button {
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background: none;
+    color: #12B886;
+    border-radius: 4px;
+    padding: 0 1.25rem;
+    height: 2rem;
+    font-size: 1rem;
+}
+
+.do_reply + .do_reply {
+    margin-left: 0.5rem;
+}
+
+.do_reply {
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background: #12B886;
+    color: #fff;
+    border-radius: 4px;
+    padding: 0px 1.25rem;
+    height: 2rem;
+    font-size: 1rem;
+}
+
+.comment_update_input {
+    resize: none;
+    padding: 1rem 1rem 1.5rem;
+    outline: none;
+    border: 1px solid #F1F3F5;
+    margin-bottom: 1.5rem;
+    width: 100%;
+    border-radius: 4px;
+    min-height: 6.125rem;
+    font-size: 1rem;
+    color: #212529;
+    line-height: 1.75;
+    background: #fff;
+}
+
+.cancel_update_wrapper {
+    display: flex;
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+}
+
+.update_cancel {
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background: none;
+    color: #12B886;
+    border-radius: 4px;
+    padding: 0 1.25rem;
+    height: 2rem;
+    font-size: 1rem;
+}
+
+.do_update + .do_update {
+    margin-left: 0.5rem;
+}
+
+.do_update {
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    background: #12B886;
+    color: #fff;
+    border-radius: 4px;
+    padding: 0px 1.25rem;
+    height: 2rem;
+    font-size: 1rem;
+}
 
 /* 모달 버튼 css */
 .modal_overlay {
