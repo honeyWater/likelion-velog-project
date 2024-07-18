@@ -140,6 +140,12 @@ public class PostController {
         Post post = postBySlug.get();
         postService.incrementViewCount(post.getId()); // 조회 시 조회 수 증가
 
+        // 태그는 별도로 더하기
+        String tags = post.getTags().stream()
+            .map(Tag::getTagName)
+            .collect(Collectors.joining(","));
+        model.addAttribute("tags", tags);
+
 //        Comment comment = (Comment) post.getComments();
 
         // 로그인한 유저인지를 판별
@@ -171,7 +177,6 @@ public class PostController {
                 // 태그 데이터를 콤마로 구분된 문자열로 변환
                 String tags = post.getTags().stream()
                     .map(Tag::getTagName)
-//                    .filter(tag -> !tag.trim().isEmpty())
                     .collect(Collectors.joining(","));
                 model.addAttribute("tags", tags);
             } else {

@@ -16,6 +16,7 @@
 </head>
 <body>
 <input type="hidden" name="postId" th:value="${post.getId()}">
+<input type="hidden" name="tags" th:value="${tags}">
 <div class="responsive_main">
   <div class="HomeLayout_innerBlock">
     <header class="Header_block">
@@ -99,7 +100,7 @@
             </div>
           </div>
         </div>
-        <!-- 태그 래퍼 div -->
+        <div class="tag_wrapper"></div>
         <!-- 좋아요 리모콘 div -->
         <div class="like_block">
           <div class="real_like_block">

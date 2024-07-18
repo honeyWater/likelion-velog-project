@@ -252,8 +252,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const tagInput = document.querySelector('.tag_input');
     const tagDescription = document.querySelector('.tag_description');
     let tags = initialTags ? initialTags.split(',') : [];
-    console.log('initialTags:', initialTags);
-    console.log('tags:', tags);
 
     // 페이지 로드 시 태그 렌더링
     renderTags();

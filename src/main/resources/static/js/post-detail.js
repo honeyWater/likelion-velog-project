@@ -46,4 +46,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert('오류가 발생했습니다.');
             })
     });
+
+    // 태그 부분
+    const initialTags = document.querySelector('input[name="tags"]').value;
+    const tagConainer = document.querySelector('.tag_wrapper');
+    let tags = initialTags ? initialTags.split(',') : [];
+
+    function renderTags() {
+        tagConainer.innerHTML = tags.map(tag => `
+            <a href="/#" class="tag" data-tag="${tag}">${tag}</a>
+        `).join('');
+    }
+
+    renderTags();
 });
