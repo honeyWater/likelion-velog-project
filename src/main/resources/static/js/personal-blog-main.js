@@ -21,4 +21,19 @@ document.addEventListener('DOMContentLoaded', function() {
             positionIndicator(this);
         });
     });
+
+    // 태그 부분
+    const tagContainers = document.querySelectorAll('.FlatPostCard_tagsWrapper');
+    const domain = /*[[${domain}]]*/ '';
+
+    tagContainers.forEach(container => {
+        const tags = container.dataset.tags ? container.dataset.tags.split(',') : [];
+
+        if (tags.length > 0) {
+            container.innerHTML = tags.map(tag => `
+                <a href="/@${domain}/#" class="tag">${tag}</a>
+            `).join('');
+        }
+        // <a href="/@${domain}/posts?tag=${encodeURIComponent(tag)}" class="tag">${tag}</a>
+    });
 });

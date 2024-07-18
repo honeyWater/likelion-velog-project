@@ -81,4 +81,25 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     boolean existsBySlug(String slug);
 
     List<Post> findByUserIdAndPublishStatusFalse(Long userId);
+
+    @Query("""
+        SELECT p
+        FROM Post p
+        JOIN p.tags t
+        WHERE p.user.id = :userId
+        AND p.publishStatus = true
+        AND p.inPrivate = false
+        AND t.tagName = :tagName
+        """)
+    List<Post> findPublishedPostsNotInPrivateByTag(@Param("tagName") String tagName, @Param("userId") Long userId);
+
+    @Query("""
+        SELECT p
+        FROM Post p
+        JOIN p.tags t
+        WHERE p.user.id = :userId
+        AND p.publishStatus = true
+        AND t.tagName = :tagName
+        """)
+    List<Post> findPublishedPostsAlsoInPrivateByTag(@Param("tagName") String tagName, @Param("userId") Long userId);
 }

@@ -68,4 +68,17 @@ class PostServiceTest {
             }
         }
     }
+
+    @Test
+    @DisplayName("태그로 필터링하여 출간된 게시글 조회")
+    void getPublishedPostsNotInPrivateByTag() {
+        String tagName = "태그1";
+        Long userId = 4L;
+        List<PostCardDto> posts = postService.getPublishedPostsNotInPrivateByTag(tagName, userId);
+        log.info("Found {} posts for tag '{}' and user ID {}", posts.size(), tagName, userId);
+    }
+
+    @Test
+    void getPublishedPostsAlsoInPrivateByTag() {
+    }
 }

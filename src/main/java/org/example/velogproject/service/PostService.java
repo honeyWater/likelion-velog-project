@@ -8,7 +8,6 @@ import org.example.velogproject.dto.PostCardDto;
 import org.example.velogproject.dto.PostPublishDto;
 import org.example.velogproject.dto.PostWriteDto;
 import org.example.velogproject.repository.PostRepository;
-import org.example.velogproject.repository.TagRepository;
 import org.example.velogproject.util.CommonUtil;
 import org.example.velogproject.util.SlugUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final CommonUtil commonUtil;
-    private final TagRepository tagRepository;
 
     @Value("${app.upload.dir}")
     private String uploadDir;
@@ -36,20 +34,27 @@ public class PostService {
     // 게시글 List<Post> -> List<PostCardDto>
     public List<PostCardDto> toPostCardDto(List<Post> posts) {
         return posts.stream()
-            .map(post -> PostCardDto.builder()
-                .id(post.getId())
-                .user(post.getUser())
-                .title(post.getTitle())
-                .slug(post.getSlug())
-                .description(post.getDescription())
-                .createdAt(post.getCreatedAt())
-                .thumbnailImage(post.getThumbnailImage())
-                .inPrivate(post.isInPrivate())
-                .publishStatus(post.isPublishStatus())
-                .viewCount(post.getViewCount())
-                .likeCount(post.getLikeCount())
-                .commentCount(post.getCommentCount())
-                .build())
+            .map(post -> {
+                String tagString = post.getTags().stream()
+                    .map(Tag::getTagName)
+                    .collect(Collectors.joining(","));
+
+                return PostCardDto.builder()
+                        .id(post.getId())
+                        .user(post.getUser())
+                        .title(post.getTitle())
+                        .slug(post.getSlug())
+                        .description(post.getDescription())
+                        .createdAt(post.getCreatedAt())
+                        .thumbnailImage(post.getThumbnailImage())
+                        .inPrivate(post.isInPrivate())
+                        .publishStatus(post.isPublishStatus())
+                        .viewCount(post.getViewCount())
+                        .likeCount(post.getLikeCount())
+                        .commentCount(post.getCommentCount())
+                        .tagString(tagString)
+                        .build();
+            })
             .collect(Collectors.toList());
     }
 
@@ -286,5 +291,19 @@ public class PostService {
         Post post = getPostById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
         post.setViewCount(post.getViewCount() + 1);
         postRepository.save(post);
+    }
+
+    // 특정 사용자의 비공개가 아니고 출간된 게시물을 태그로 필터링하여 조회
+    @Transactional(readOnly = true)
+    public List<PostCardDto> getPublishedPostsNotInPrivateByTag(String tagName, Long userId) {
+        List<Post> posts = postRepository.findPublishedPostsNotInPrivateByTag(tagName, userId);
+        return toPostCardDto(posts);
+    }
+
+    // 특정 사용자의 출간된 모든 게시물(비공개 포함)을 태그로 필터링하여 조회
+    @Transactional(readOnly = true)
+    public List<PostCardDto> getPublishedPostsAlsoInPrivateByTag(String tagName, Long userId) {
+        List<Post> posts = postRepository.findPublishedPostsAlsoInPrivateByTag(tagName, userId);
+        return toPostCardDto(posts);
     }
 }

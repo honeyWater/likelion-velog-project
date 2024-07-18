@@ -103,7 +103,9 @@ public class PostController {
 
     // 사용자 개인 블로그
     @GetMapping(value = {"/@{domain}", "/@{domain}/", "/@{domain}/posts"})
-    public String getPersonalPageAndPosts(HttpServletRequest request, Model model, @PathVariable String domain) {
+    public String getPersonalPageAndPosts(@PathVariable String domain,
+                                          HttpServletRequest request, Model model,
+                                          @RequestParam(name = "tag", required = false) String nowTag) {
         BlogUserDto userByDomain = userService.getUserByDomain(domain);
         if (userByDomain == null) {
             return "redirect:/error";
@@ -116,14 +118,24 @@ public class PostController {
         Long userByDomainId = userByDomain.getId();
         List<PostCardDto> posts;
 
-        if (loginUser == null || !loginUser.getId().equals(userByDomainId)) {
-            posts = postService.getPublishedPostsNotInPrivate(userByDomainId);
-        } else {
-            posts = postService.getPublishedPostsAlsoInPrivate(userByDomainId);
-        }
-
-        // 도메인 유저의 태그이름과 수를 그룹화해서 가져옴
+        // 전체 태그 목록 - 도메인 유저의 태그이름과 수를 그룹화해서 가져옴
         List<TagGroupDto> tags = tagService.getTagsByUserId(userByDomainId);
+
+        if (loginUser == null || !loginUser.getId().equals(userByDomainId)) {
+            if (nowTag == null) {
+                posts = postService.getPublishedPostsNotInPrivate(userByDomainId);
+            } else {
+                posts = postService.getPublishedPostsNotInPrivateByTag(nowTag, userByDomainId);
+                model.addAttribute("nowTag", nowTag);
+            }
+        } else {
+            if (nowTag == null) {
+                posts = postService.getPublishedPostsAlsoInPrivate(userByDomainId);
+            } else {
+                posts = postService.getPublishedPostsAlsoInPrivateByTag(nowTag, userByDomainId);
+                model.addAttribute("nowTag", nowTag);
+            }
+        }
 
         model.addAttribute("domain", domain);
         model.addAttribute("posts", posts);
@@ -220,4 +232,14 @@ public class PostController {
 
         return "posts/temp-post";
     }
+
+    // 특정 태그의 게시글 조회
+//    @GetMapping("/@{domain}/posts")
+//    public String getPostsByTag(@PathVariable String domain,
+//                                @RequestParam(name = "tag") String tag,
+//                                HttpServletRequest request, Model model) {
+//
+//
+//        return "posts/personal-blog-main";
+//    }
 }

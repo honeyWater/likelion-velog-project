@@ -134,8 +134,8 @@
             <aside class="VelogTagVerticalList_block">
               <div class="VelogTagVerticalList_title">태그 목록</div>
               <ul>
-                <li class="each_tag" th:each="tag : ${tags}">
-                  <a th:href="@{'/@' + ${domain} + '/posts?tag=' + ${tag}}" th:text="${tag.tagName}" class="go_to_tag"></a>
+                <li class="each_tag" th:each="tag : ${tags}" th:classappend="${nowTag == tag.tagName ? 'active_tag' : ''}">
+                  <a th:href="@{'/@' + ${domain} + '/posts?tag=' + ${tag.tagName}}" th:text="${tag.tagName}" class="go_to_tag"></a>
                   <span th:text="'(' + ${tag.count} + ')'"></span>
                 </li>
               </ul>
@@ -150,8 +150,8 @@
                   <h2 th:text="${post.getTitle()}"></h2>
                 </a>
                 <p th:text="${post.getDescription()}"></p>
-                <div class="FlatPostCard_tagsWrapper">
-                  <!-- 태그들 -->
+                <div class="FlatPostCard_tagsWrapper" th:attr="data-tags=${post.tagString}">
+                  <!-- 여기에 JavaScript로 태그들이 렌더링됩니다. -->
                 </div>
                 <div class="FlatPostCard_subInfo">
                   <span th:text="${post.getCreatedAt()}"></span>
