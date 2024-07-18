@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -69,11 +70,16 @@ public class Post {
     private Set<SeriesPost> seriesPosts;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Tag> tags;
+    private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PostImage> postImages;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
+
+    public void setTags(Set<Tag> tags){
+        this.tags.clear();
+        this.tags.addAll(tags);
+    }
 }

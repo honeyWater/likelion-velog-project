@@ -266,3 +266,75 @@ textarea {
     word-break: keep-all;
     overflow-wrap: break-word;
 }
+
+/* 태그 */
+.tag_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+}
+
+.each_tag {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag {
+    font-size: 1rem;
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    height: 2rem;
+    border-radius: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    background: #F8F9FA;
+    color: #12B886;
+    margin-right: 0.75rem;
+    transition: all 0.125s ease-in 0s;
+    cursor: pointer;
+    margin-bottom: 0.75rem;
+}
+
+.tag:hover {
+    background-color: #e9ecef;
+}
+
+.tag_input {
+    flex: 1;
+    min-width: 100px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+}
+
+.tag_description {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    margin-top: 5px;
+    width: 50%;
+    min-width: 400px;
+    box-sizing: border-box;
+    z-index: 10;
+}
+
+.tag_description::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 20px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent rgba(0, 0, 0, 0.8) transparent; /* 화살표 방향 */
+    z-index: 10;
+}

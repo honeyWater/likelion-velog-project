@@ -26,4 +26,10 @@ public class Tag {
 
     @Column(name = "tag_name", nullable = false, length = 50)
     private String tagName;
+
+    public Tag(Post post, User user, String tagName){
+        this.post = post;
+        this.user = user;
+        this.tagName = tagName;
+    }
 }

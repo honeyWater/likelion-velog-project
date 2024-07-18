@@ -3,9 +3,12 @@ package org.example.velogproject.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.velogproject.domain.Post;
+import org.example.velogproject.domain.Tag;
 import org.example.velogproject.dto.PostCardDto;
 import org.example.velogproject.dto.PostPublishDto;
+import org.example.velogproject.dto.PostWriteDto;
 import org.example.velogproject.repository.PostRepository;
+import org.example.velogproject.repository.TagRepository;
 import org.example.velogproject.util.CommonUtil;
 import org.example.velogproject.util.SlugUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +19,7 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,6 +28,7 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final CommonUtil commonUtil;
+    private final TagRepository tagRepository;
 
     @Value("${app.upload.dir}")
     private String uploadDir;
@@ -152,46 +157,63 @@ public class PostService {
 
     // 첫 게시글 임시저장
     @Transactional
-    public Post savePostFirstTemporarily(Post post) {
+    public Post savePostFirstTemporarily(PostWriteDto postWriteDto) {
+        Post newPost = new Post();
+
         // 첫 임시저장 세팅
-        post.setDescription(commonUtil.removeHtmlAndMarkdown(post.getContent()));
-        post.setCreatedAt(LocalDateTime.now());
-        post.setThumbnailImage(null);   // controller 에서 String 값으로 이용 후 null 처리
-        post.setPublishStatus(false);   // 출간 x
-        post.setInPrivate(false);       // 비공개 x
-        post.setViewCount(0L);
-        post.setLikeCount(0);
-        post.setCommentCount(0);
+        newPost.setUser(postWriteDto.getUser());
+        newPost.setTitle(postWriteDto.getTitle());
+        newPost.setContent(postWriteDto.getContent());
+        newPost.setDescription(commonUtil.removeHtmlAndMarkdown(postWriteDto.getContent()));
+        newPost.setCreatedAt(LocalDateTime.now());
+        newPost.setThumbnailImage(null);   // controller 에서 String 값으로 이용 후 null 처리
+        newPost.setPublishStatus(false);   // 출간 x
+        newPost.setInPrivate(false);       // 비공개 x
+        newPost.setViewCount(0L);
+        newPost.setLikeCount(0);
+        newPost.setCommentCount(0);
 
         // title 을 독립적인 슬러그 값으로 변환 후 저장
-        String uniqueSlug = SlugUtils.generateUniqueSlug(post.getTitle(), postRepository);
-        post.setSlug(uniqueSlug);
+        String uniqueSlug = SlugUtils.generateUniqueSlug(postWriteDto.getTitle(), postRepository);
+        newPost.setSlug(uniqueSlug);
 
-        return postRepository.save(post);
+        // tag 처리
+        Set<Tag> tags = postWriteDto.getTags().stream()
+            .map(tagName -> new Tag(newPost, postWriteDto.getUser(), tagName))
+            .collect(Collectors.toSet());
+        newPost.setTags(tags);
+
+        return postRepository.save(newPost);
     }
 
     // 기존 게시글 존재 시 해당 게시글을 업데이트
     @Transactional
-    public Post updatePostTemporarily(Post post) {
-        Optional<Post> existedPost = getPostById(post.getId());
+    public Post updatePostTemporarily(PostWriteDto postWriteDto) {
+        Optional<Post> existedPost = getPostById(postWriteDto.getId());
         if (existedPost.isPresent()) {
             Post postToUpdate = existedPost.get();
 
             // 필요한 업데이트 작업 수행
-            postToUpdate.setTitle(post.getTitle());
-            postToUpdate.setContent(post.getContent());
-            if (!post.isPublishStatus()) {
+            postToUpdate.setTitle(postWriteDto.getTitle());
+            postToUpdate.setContent(postWriteDto.getContent());
+            if (!postWriteDto.isPublishStatus()) {
                 // 출간한 적이 없다면, description 설정
-                postToUpdate.setDescription(commonUtil.removeHtmlAndMarkdown(post.getContent()));
+                postToUpdate.setDescription(commonUtil.removeHtmlAndMarkdown(postWriteDto.getContent()));
             }
 
             // 추가로 필요한 필드 업데이트 (slug)
-            postToUpdate.setSlug(SlugUtils.generateUniqueSlug(post.getTitle(), postRepository));
+            postToUpdate.setSlug(SlugUtils.generateUniqueSlug(postWriteDto.getTitle(), postRepository));
+
+            // tag 처리
+            Set<Tag> tags = postWriteDto.getTags().stream()
+                .map(tagName -> new Tag(postToUpdate, postToUpdate.getUser(), tagName))
+                .collect(Collectors.toSet());
+            postToUpdate.setTags(tags);
 
             return postRepository.save(postToUpdate);
         } else {
             // 기존 게시글이 없을 경우 예외 처리
-            throw new RuntimeException("게시글을 찾을 수 없습니다: " + post.getId());
+            throw new RuntimeException("게시글을 찾을 수 없습니다: " + postWriteDto.getId());
         }
     }
 
@@ -220,7 +242,7 @@ public class PostService {
 
     // 썸네일 삭제
     @Transactional
-    public void removePostThumbnail(Long postId){
+    public void removePostThumbnail(Long postId) {
         Post post = getPostById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
         post.setThumbnailImage(null);
         postRepository.save(post);
@@ -248,13 +270,21 @@ public class PostService {
 
     // 게시글 삭제
     @Transactional
-    public void deletePost(Long postId){
+    public void deletePost(Long postId) {
         postRepository.deleteById(postId);
     }
 
     // userId 로 임시 글 목록 추출
     @Transactional(readOnly = true)
-    public List<Post> getNotPublishedPostsByUserId(Long userId){
+    public List<Post> getNotPublishedPostsByUserId(Long userId) {
         return postRepository.findByUserIdAndPublishStatusFalse(userId);
+    }
+
+    // 게시글 조회수 증가
+    @Transactional
+    public void incrementViewCount(Long postId) {
+        Post post = getPostById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+        post.setViewCount(post.getViewCount() + 1);
+        postRepository.save(post);
     }
 }

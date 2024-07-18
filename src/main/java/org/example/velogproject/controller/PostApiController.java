@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.velogproject.domain.Post;
 import org.example.velogproject.domain.User;
 import org.example.velogproject.dto.PostPublishDto;
+import org.example.velogproject.dto.PostWriteDto;
 import org.example.velogproject.jwt.util.JwtTokenizer;
 import org.example.velogproject.service.PostService;
 import org.example.velogproject.service.UserService;
@@ -27,7 +28,7 @@ public class PostApiController {
 
     // 새로 생성하는 게시글 임시 저장 - permitAll x
     @PostMapping("/first-temporary-save")
-    public ResponseEntity<?> savePostTemporarilyFirst(@RequestBody Post post, HttpServletRequest request) {
+    public ResponseEntity<?> savePostTemporarilyFirst(@RequestBody PostWriteDto postWriteDto, HttpServletRequest request) {
         try {
             String accessToken = jwtTokenizer.getAccessToken(request)
                 .orElseThrow(() -> new RuntimeException("Access token not found"));
@@ -35,9 +36,9 @@ public class PostApiController {
             Optional<User> user = userService.getUserById(userId);
 
             if (user.isPresent()) {
-                user.ifPresent(post::setUser);
-                String writeOrPublish = post.getThumbnailImage();
-                Post createdPost = postService.savePostFirstTemporarily(post);
+                user.ifPresent(postWriteDto::setUser);
+                String writeOrPublish = postWriteDto.getThumbnailImage();
+                Post createdPost = postService.savePostFirstTemporarily(postWriteDto);
 
                 String redirectUrl = postUtil.setRedirectUrl(writeOrPublish, createdPost.getId());
                 return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
@@ -51,13 +52,13 @@ public class PostApiController {
 
     // 생성된 게시글을 임시 저장 - permitAll x
     @PutMapping("/temporary-save")
-    public ResponseEntity<?> savePostTemporarily(@RequestBody Post post) {
+    public ResponseEntity<?> savePostTemporarily(@RequestBody PostWriteDto postWriteDto) {
         try {
-            post.setDescription(postUtil.generateDescription(post.getContent()));
-            Post updatedPost = postService.updatePostTemporarily(post); // 기존 게시글 업데이트
+            postWriteDto.setDescription(postUtil.generateDescription(postWriteDto.getContent()));
+            Post updatedPost = postService.updatePostTemporarily(postWriteDto); // 기존 게시글 업데이트
 
             // 임시저장에 사용하지 않는 String 값을 이용
-            String redirectUrl = postUtil.setRedirectUrl(post.getThumbnailImage(), updatedPost.getId());
+            String redirectUrl = postUtil.setRedirectUrl(postWriteDto.getThumbnailImage(), updatedPost.getId());
             return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
 
         } catch (Exception e) {

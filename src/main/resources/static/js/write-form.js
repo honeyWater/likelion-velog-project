@@ -163,7 +163,8 @@ document.addEventListener("DOMContentLoaded", function () {
             id: postId || null,
             title: document.querySelector('.titleArea').value,
             content: simplemde.value(),
-            thumbnailImage: 'justTemp'
+            thumbnailImage: 'justTemp',
+            tags: tags
         };
 
         // fetch를 사용하여 요청 보내기
@@ -211,7 +212,8 @@ document.addEventListener("DOMContentLoaded", function () {
             id: postId || null,
             title: document.querySelector('.titleArea').value,
             content: simplemde.value(),
-            thumbnailImage: 'forPublish'
+            thumbnailImage: 'forPublish',
+            tags: tags
         };
 
         // fetch를 사용하여 요청 보내기
@@ -242,4 +244,61 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert('저장 중 오류가 발생했습니다.');
             });
     });
+
+    // 태그 부분
+    const initialTags = document.querySelector('input[name="tags"]').value;
+    console.log('initialTags: ' + initialTags);
+    const tagConainer = document.querySelector('.each_tag');
+    const tagInput = document.querySelector('.tag_input');
+    const tagDescription = document.querySelector('.tag_description');
+    let tags = initialTags ? initialTags.split(',') : [];
+    console.log('initialTags:', initialTags);
+    console.log('tags:', tags);
+
+    // 페이지 로드 시 태그 렌더링
+    renderTags();
+
+    function addTag(tag) {
+        if (tag && !tags.includes(tag)) {
+            tags.push(tag);
+            renderTags();
+        }
+    }
+
+    function removeTag(tag) {
+        tags = tags.filter(t => t !== tag);
+        renderTags();
+    }
+
+    function renderTags() {
+        tagConainer.innerHTML = tags.map(tag => `
+            <div class="tag" data-tag="${tag}">${tag}</div>
+        `).join('');
+    }
+
+    tagInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ',') {
+            e.preventDefault();
+            const tag = this.value.trim().replace(',', '');
+            if (tag) {
+                addTag(tag);
+                this.value = '';
+            }
+        }
+    });
+
+    tagInput.addEventListener('focus', () => {
+        tagDescription.style.display = 'block';
+    })
+
+    tagInput.addEventListener('blur', () => {
+        tagDescription.style.display = 'none';
+    })
+
+    tagConainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('tag')) {
+            const tag = e.target.getAttribute('data-tag');
+            removeTag(tag);
+        }
+    })
 });

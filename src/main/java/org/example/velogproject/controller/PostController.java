@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.velogproject.domain.Post;
+import org.example.velogproject.domain.Tag;
 import org.example.velogproject.domain.User;
 import org.example.velogproject.dto.BlogUserDto;
 import org.example.velogproject.dto.PostCardDto;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -136,6 +138,7 @@ public class PostController {
             return "error";
         }
         Post post = postBySlug.get();
+        postService.incrementViewCount(post.getId()); // 조회 시 조회 수 증가
 
 //        Comment comment = (Comment) post.getComments();
 
@@ -164,6 +167,13 @@ public class PostController {
             if (existedPost.isPresent()) {
                 Post post = existedPost.get();
                 model.addAttribute("post", post);
+
+                // 태그 데이터를 콤마로 구분된 문자열로 변환
+                String tags = post.getTags().stream()
+                    .map(Tag::getTagName)
+//                    .filter(tag -> !tag.trim().isEmpty())
+                    .collect(Collectors.joining(","));
+                model.addAttribute("tags", tags);
             } else {
                 // 게시글이 존재하지 않을 경우 에러 페이지 처리
                 return "redirect:/error";
@@ -184,10 +194,10 @@ public class PostController {
 
     // 임시 글 목록
     @GetMapping("/saves")
-    public String getTemporaryPosts(HttpServletRequest request, Model model){
+    public String getTemporaryPosts(HttpServletRequest request, Model model) {
         // 로그인한 유저인지를 판별
         User loginUser = addSignedInUserToModel(request, model);
-        if (loginUser == null){
+        if (loginUser == null) {
             log.info("로그인하지 않은 유저가 임시 글 목록에 접근합니다.");
             return "redirect:/error";
         }
