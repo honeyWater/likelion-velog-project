@@ -51,8 +51,26 @@ public class CommentApiController {
         return ResponseEntity.ok(comments);
     }
 
+    @PutMapping("/comments/{commentId}")
+    public ResponseEntity<?> updateComment(@PathVariable Long commentId, @RequestBody CommentDto updateDto) {
+        try {
+            updateDto.setId(commentId);
+            Comment updatedComment = commentService.updateComment(updateDto);
+
+            Post post = postService.getPostById(updatedComment.getPost().getId())
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+            String domain = post.getUser().getDomain();
+
+            String redirectUrl = "/@" + domain + "/" + post.getSlug();
+            return ResponseEntity.ok(Map.of("redirectUrl", redirectUrl));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     /**
      * 댓글 삭제 메서드
+     *
      * @param commentId
      * @return redirectUrl
      */

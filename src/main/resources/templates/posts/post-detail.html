@@ -183,11 +183,11 @@
                 </div>
               </div>
               <div class="actions" th:if="${signedIn.id != null and signedIn.id == comment.user.id}">
-                <span>수정</span>
+                <span th:onclick="'editComment(\'' + ${comment.id} + '\')'">수정</span>
                 <span th:onclick="'deleteComment(\'' + ${comment.id} + '\')'">삭제</span>
               </div>
             </div>
-            <div class="comment_content_block">
+            <div class="comment_content_block" th:id="'comment-content-' + ${comment.id}">
               <div class="comment_content_wrapper">
                 <div class="comment_content">
                   <div class="real_comment_content">

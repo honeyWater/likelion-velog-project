@@ -125,3 +125,58 @@ function deleteComment(commentId) {
             })
     }
 }
+
+function editComment(commentId) {
+    const contentBlock = document.getElementById('comment-content-' + commentId);
+    const originalContent = contentBlock.querySelector('.real_comment_content p').innerText;
+
+    contentBlock.innerHTML = `
+        <div class="comment_update_wrapper">
+          <textarea class="comment_update_input" placeholder="댓글을 작성하세요.">${originalContent}</textarea>
+            <div class="cancel_update_wrapper">
+                <button class="update_cancel" onclick="cancelEdit(${commentId}, '${originalContent}')">취소</button>
+                <button class="do_update" onclick="updateComment(${commentId})">댓글 수정</button>
+            </div>
+        </div>
+    `
+}
+
+function cancelEdit(commentId, originalContent) {
+    const contentBlock = document.getElementById('comment-content-' + commentId);
+    contentBlock.innerHTML = `
+        <div class="comment_content_wrapper">
+            <div class="comment_content">
+                <div class="real_comment_content">
+                    <p>${originalContent}</p>
+                </div>
+            </div>
+        </div>
+    `
+}
+
+function updateComment(commentId) {
+    const updatedContent = document.querySelector(
+        `#comment-content-${commentId} .comment_update_input`
+    ).value;
+
+    fetch(`/api/comments/${commentId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({comment: updatedContent})
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirectUrl) {
+                window.location.href = data.redirectUrl;
+            } else {
+                console.error('No redirect URL provided');
+                alert('댓글이 수정되었지만 리다이렉트 URL이 없습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Error: ', error);
+            alert('댓글 수정 중 오류가 발생했습니다.');
+        })
+}

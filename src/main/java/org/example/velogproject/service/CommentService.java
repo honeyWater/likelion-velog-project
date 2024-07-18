@@ -74,6 +74,16 @@ public class CommentService {
         return commentRepository.findById(commentId);
     }
 
+    // commentId 에 해당하는 댓글 수정
+    @Transactional
+    public Comment updateComment(CommentDto updateDto) {
+        Comment comment = getCommentById(updateDto.getId())
+            .orElseThrow(() -> new RuntimeException("Comment not found"));
+
+        comment.setComment(updateDto.getComment());
+        return commentRepository.save(comment);
+    }
+
     // commentId 에 해당하는 댓글 삭제
     @Transactional
     public void deleteComment(Long commentId) {
