@@ -104,30 +104,32 @@ public class UserController {
             return "/users/user-register-form";
         }
 
-        // 유효성 검증 후 처리
-        Optional<SocialLoginInfo> socialLoginInfoOptional = socialLoginInfoService.findByProviderAndUuidAndSocialId(
-            userRegisterDto.getProvider(), userRegisterDto.getUuid(), userRegisterDto.getSocialId()
-        );
-
-        if (socialLoginInfoOptional.isPresent()) {
-            SocialLoginInfo socialLoginInfo = socialLoginInfoOptional.get();
-            LocalDateTime now = LocalDateTime.now();
-            Duration duration = Duration.between(socialLoginInfo.getCreatedAt(), now);
-
-            if (duration.toMinutes() > 20) {
-                return "redirect:/error";   // 회원가입이 20분 이상 경과한 경우
-            }
-
-            userRegisterDto.setProfileImage(
-                userService.downloadAndSaveProfileImage(userRegisterDto.getProfileImage(), userRegisterDto.getUsername())
+        // 소셜 로그인 사용자인 경우
+        if (userRegisterDto.getProvider() != null && !userRegisterDto.getProvider().isEmpty()) {
+            Optional<SocialLoginInfo> socialLoginInfoOptional = socialLoginInfoService.findByProviderAndUuidAndSocialId(
+                userRegisterDto.getProvider(), userRegisterDto.getUuid(), userRegisterDto.getSocialId()
             );
 
-            // 유효한 경우 User 정보를 저장
-            userService.registUser(userRegisterDto, passwordEncoder);
-            return "redirect:/welcome";
-        } else {
-            return "redirect:/error"; // 소셜 로그인 정보가 없는 경우 에러 페이지로 리다이렉트
+            if (socialLoginInfoOptional.isPresent()) {
+                SocialLoginInfo socialLoginInfo = socialLoginInfoOptional.get();
+                LocalDateTime now = LocalDateTime.now();
+                Duration duration = Duration.between(socialLoginInfo.getCreatedAt(), now);
+
+                if (duration.toMinutes() > 20) {
+                    return "redirect:/error";   // 회원가입이 20분 이상 경과한 경우
+                }
+
+                userRegisterDto.setProfileImage(
+                    userService.downloadAndSaveProfileImage(userRegisterDto.getProfileImage(), userRegisterDto.getUsername())
+                );
+            } else {
+                return "redirect:/error"; // 소셜 로그인 정보가 없는 경우 에러 페이지로 리다이렉트
+            }
         }
+
+        // 일반 사용자 및 유효한 소셜 로그인 사용자 모두에 대해 User 정보를 저장
+        userService.registUser(userRegisterDto, passwordEncoder);
+        return "redirect:/welcome";
     }
 
     // 로그인 폼 화면 반환
