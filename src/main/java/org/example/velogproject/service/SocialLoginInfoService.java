@@ -15,6 +15,7 @@ public class SocialLoginInfoService {
 
     @Transactional(readOnly = false)
     public SocialLoginInfo saveSocialLoginInfo(String provider, String socialId) {
+
         SocialLoginInfo socialLoginInfo = new SocialLoginInfo();
         socialLoginInfo.setProvider(provider);
         socialLoginInfo.setSocialId(socialId);

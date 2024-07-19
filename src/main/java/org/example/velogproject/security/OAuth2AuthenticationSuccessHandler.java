@@ -8,7 +8,6 @@ import org.example.velogproject.domain.Role;
 import org.example.velogproject.domain.SocialLoginInfo;
 import org.example.velogproject.domain.User;
 import org.example.velogproject.jwt.util.JwtTokenizer;
-import org.example.velogproject.service.RefreshTokenService;
 import org.example.velogproject.service.SocialLoginInfoService;
 import org.example.velogproject.service.UserService;
 import org.springframework.security.core.Authentication;
@@ -27,7 +26,6 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     private final SocialLoginInfoService socialLoginInfoService;
     private final UserService userService;
     private final JwtTokenizer jwtTokenizer;
-    private final RefreshTokenService refreshTokenService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

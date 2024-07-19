@@ -27,6 +27,7 @@ public class CommentService {
     // 댓글 추가
     @Transactional
     public Comment addComment(Long postId, CommentDto commentDto) {
+
         Post post = postRepository.findById(postId)
             .orElseThrow(() -> new RuntimeException("Post not found"));
 
@@ -44,6 +45,7 @@ public class CommentService {
 
     @Transactional
     public Comment addReply(Long parentId, CommentDto replyDto) {
+
         Comment parentComment = commentRepository.findById(parentId)
             .orElseThrow(() -> new RuntimeException("Parent comment not found"));
 
@@ -62,7 +64,9 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public List<CommentDto> getCommentByPostId(Long postId) {
+
         List<Comment> comments = commentRepository.findByPostIdAndParentCommentIsNullOrderByCreatedAtAsc(postId);
+
         return comments.stream()
             .map(this::convertToDto)
             .collect(Collectors.toList());
@@ -77,6 +81,7 @@ public class CommentService {
     // commentId 에 해당하는 댓글 수정
     @Transactional
     public Comment updateComment(CommentDto updateDto) {
+
         Comment comment = getCommentById(updateDto.getId())
             .orElseThrow(() -> new RuntimeException("Comment not found"));
 

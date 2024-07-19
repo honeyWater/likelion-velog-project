@@ -20,7 +20,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
         this.setAuthenticated(true);
     }
 
-    public JwtAuthenticationToken(String token){
+    public JwtAuthenticationToken(String token) {
         super(null);
         this.token = token;
         this.setAuthenticated(false);

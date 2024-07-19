@@ -48,11 +48,6 @@ public class UserService {
         return userRepository.existsByDomain(domain);
     }
 
-    @Transactional(readOnly = true)
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
     // id로 User 찾기
     @Transactional(readOnly = true)
     public Optional<User> getUserById(Long id) {
@@ -63,16 +58,6 @@ public class UserService {
     @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
-    }
-
-    // id로 User 유무 찾기
-    @Transactional(readOnly = true)
-    public String getUserIdById(Long id) {
-        if (userRepository.existsById(id)) {
-            return id.toString();
-        } else {
-            return null;
-        }
     }
 
     // provider, socialId로 User 찾기

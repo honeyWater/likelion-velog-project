@@ -17,8 +17,8 @@ public class SocialUserService {
     //소셜에서 정보를 가져와서 저장하거나,  이미 있다면 수정하거나..
     public SocialUser saveOrUpdateUser(String socialId, String provider,
                                        String username, String avatarUrl) {
-        Optional<SocialUser> existingUser
-            = socialUserRepository.findBySocialIdAndProvider(socialId, provider);
+
+        Optional<SocialUser> existingUser = socialUserRepository.findBySocialIdAndProvider(socialId, provider);
         SocialUser socialUser;
 
         if (existingUser.isPresent()) {

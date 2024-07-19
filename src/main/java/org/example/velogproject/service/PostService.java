@@ -33,6 +33,7 @@ public class PostService {
 
     // 게시글 List<Post> -> List<PostCardDto>
     public List<PostCardDto> toPostCardDto(List<Post> posts) {
+
         return posts.stream()
             .map(post -> {
                 String tagString = post.getTags().stream()
@@ -40,20 +41,20 @@ public class PostService {
                     .collect(Collectors.joining(","));
 
                 return PostCardDto.builder()
-                        .id(post.getId())
-                        .user(post.getUser())
-                        .title(post.getTitle())
-                        .slug(post.getSlug())
-                        .description(post.getDescription())
-                        .createdAt(post.getCreatedAt())
-                        .thumbnailImage(post.getThumbnailImage())
-                        .inPrivate(post.isInPrivate())
-                        .publishStatus(post.isPublishStatus())
-                        .viewCount(post.getViewCount())
-                        .likeCount(post.getLikeCount())
-                        .commentCount(post.getCommentCount())
-                        .tagString(tagString)
-                        .build();
+                    .id(post.getId())
+                    .user(post.getUser())
+                    .title(post.getTitle())
+                    .slug(post.getSlug())
+                    .description(post.getDescription())
+                    .createdAt(post.getCreatedAt())
+                    .thumbnailImage(post.getThumbnailImage())
+                    .inPrivate(post.isInPrivate())
+                    .publishStatus(post.isPublishStatus())
+                    .viewCount(post.getViewCount())
+                    .likeCount(post.getLikeCount())
+                    .commentCount(post.getCommentCount())
+                    .tagString(tagString)
+                    .build();
             })
             .collect(Collectors.toList());
     }
@@ -129,6 +130,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostPublishDto getPostPublishDtoById(Long id) {
         Optional<Post> existedPost = postRepository.findById(id);
+
         if (existedPost.isPresent()) {
             Post post = existedPost.get();
             return PostPublishDto.builder()
@@ -194,7 +196,9 @@ public class PostService {
     // 기존 게시글 존재 시 해당 게시글을 업데이트
     @Transactional
     public Post updatePostTemporarily(PostWriteDto postWriteDto) {
+
         Optional<Post> existedPost = getPostById(postWriteDto.getId());
+
         if (existedPost.isPresent()) {
             Post postToUpdate = existedPost.get();
 
@@ -225,7 +229,9 @@ public class PostService {
     // 썸네일 업로드 저장
     @Transactional
     public void savePostThumbnail(String thumbnail, Long id) {
+
         Optional<Post> post = getPostById(id);
+
         if (post.isPresent()) {
             Post existedPost = post.get();
             existedPost.setThumbnailImage(thumbnail);
@@ -236,7 +242,9 @@ public class PostService {
     // 기존 썸네일 로컬에서 파일 제거
     @Transactional
     public void deleteExistingThumbnail(Long postId) {
+
         Post post = getPostById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+
         if (post.getThumbnailImage() != null && !post.getThumbnailImage().isEmpty()) {
             File file = new File(uploadDir + "thumbnail_image/" + post.getThumbnailImage());
             if (file.exists()) {
@@ -256,7 +264,9 @@ public class PostService {
     // 게시글 출간
     @Transactional
     public Post publishPost(PostPublishDto publishDto) {
+
         Optional<Post> existedPost = getPostById(publishDto.getId());
+
         if (existedPost.isPresent()) {
             Post postToUpdate = existedPost.get();
 
