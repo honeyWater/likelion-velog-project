@@ -5,14 +5,14 @@
   <title th:text="${post.title}"></title>
   <link rel="shortcut icon" th:href="@{'/profile_image/favicon.ico'}" type="image/x-icon">
   <link rel="icon" th:href="@{'/profile_image/favicon.ico'}" type="image/x-icon">
-  <link rel="stylesheet" th:href="@{/css/velog-main.css}"/>
-  <link rel="stylesheet" th:href="@{/css/menu.css}"/>
-  <link rel="stylesheet" th:href="@{/css/personal-blog-main.css}"/>
-  <link rel="stylesheet" th:href="@{/css/post-detail.css}"/>
+  <link rel="stylesheet" th:href="@{/css/posts/velog-main.css}"/>
+  <link rel="stylesheet" th:href="@{/css/posts/menu.css}"/>
+  <link rel="stylesheet" th:href="@{/css/posts/personal-blog-main.css}"/>
+  <link rel="stylesheet" th:href="@{/css/posts/post-detail.css}"/>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="/js/menu.js"></script>
-  <script src="/js/personal-blog-main.js"></script>
-  <script src="/js/post-detail.js"></script>
+  <script src="/js/posts/menu.js"></script>
+  <script src="/js/posts/personal-blog-main.js"></script>
+  <script src="/js/posts/post-detail.js"></script>
 </head>
 <body>
 <input type="hidden" id="signedInUserId" th:value="${signedIn != null ? signedIn.id : ''}">

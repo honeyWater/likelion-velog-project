@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderTags() {
         tagConainer.innerHTML = tags.map(tag => `
-            <a href="/#" class="tag" data-tag="${tag}">${tag}</a>
+            <a href="/static#" class="tag" data-tag="${tag}">${tag}</a>
         `).join('');
     }
 
