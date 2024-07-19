@@ -55,8 +55,8 @@ class PostServiceTest {
                 post.setTitle("테스트 게시글 " + (i + 1));
                 post.setDescription("테스트 게시글입니다.");
                 post.setContent("테스트 게시글 " + (i + 1) + "입니다.");
-                post.setCreatedAt(LocalDateTime.of(2020 + i, i + 3, 10, 18, 0, 0));
-                post.setInPrivate(i != 4);
+                post.setCreatedAt(LocalDateTime.of(2024, 7 - i, 17, 18, 0, 0));
+                post.setInPrivate(i == 4);
                 post.setPublishStatus(i != 3);
                 post.setViewCount((long) ((i + 1) * 100));
                 post.setLikeCount(0);

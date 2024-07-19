@@ -52,8 +52,8 @@ public class PostService {
                     .publishStatus(post.isPublishStatus())
                     .viewCount(post.getViewCount())
                     .likeCount(post.getLikeCount())
-                    .commentCount(post.getCommentCount())
                     .tagString(tagString)
+                    .comments(post.getComments())
                     .build();
             })
             .collect(Collectors.toList());
