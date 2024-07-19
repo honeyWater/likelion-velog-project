@@ -15,7 +15,6 @@ import org.example.velogproject.jwt.exception.JwtExceptionCode;
 import org.example.velogproject.jwt.token.JwtAuthenticationToken;
 import org.example.velogproject.jwt.util.JwtTokenizer;
 import org.example.velogproject.security.CustomUserDetails;
-import org.example.velogproject.service.RefreshTokenService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

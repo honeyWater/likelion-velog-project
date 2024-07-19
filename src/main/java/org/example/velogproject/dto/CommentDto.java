@@ -1,9 +1,7 @@
 package org.example.velogproject.dto;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.velogproject.domain.User;
 
 import java.time.LocalDateTime;
 import java.util.List;

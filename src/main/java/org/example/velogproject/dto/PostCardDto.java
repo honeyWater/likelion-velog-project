@@ -3,11 +3,9 @@ package org.example.velogproject.dto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.velogproject.domain.Tag;
 import org.example.velogproject.domain.User;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
