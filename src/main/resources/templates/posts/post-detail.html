@@ -182,7 +182,7 @@
                   <div class="comment_when" th:text="${#temporals.format(comment.createdAt, 'yyyy년 MM월 dd일')}"></div>
                 </div>
               </div>
-              <div class="actions" th:if="${signedIn.id != null and signedIn.id == comment.user.id}">
+              <div class="actions" th:if="${signedIn != null and signedIn.id != null and signedIn.id == comment.user.id}">
                 <span th:onclick="'editComment(\'' + ${comment.id} + '\')'">수정</span>
                 <span th:onclick="'deleteComment(\'' + ${comment.id} + '\')'">삭제</span>
               </div>
@@ -225,7 +225,7 @@
                                th:text="${#temporals.format(reply.createdAt, 'yyyy년 MM월 dd일')}"></div>
                         </div>
                       </div>
-                      <div class="reply_actions" th:if="${signedIn.id != null and signedIn.id == reply.user.id}">
+                      <div class="reply_actions" th:if="${signedIn != null and signedIn.id != null and signedIn.id == reply.user.id}">
                         <span th:onclick="'editReply(\'' + ${reply.id} + '\')'">수정</span>
                         <span th:onclick="'deleteReply(\'' + ${reply.id} + '\')'">삭제</span>
                       </div>

@@ -151,6 +151,13 @@ a:-webkit-any-link {
     overflow-wrap: break-word;
 }
 
+.post_content img {
+    max-width: 100%;
+    height: auto;
+    max-height: 600px; /* 원하는 최대 높이로 조정하세요 */
+    object-fit: contain;
+}
+
 .post_owner_block {
     width: 768px;
     margin-top: 16rem;

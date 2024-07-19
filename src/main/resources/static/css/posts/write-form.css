@@ -257,6 +257,13 @@ textarea {
     font-weight: 800;
 }
 
+#preview img {
+    max-width: 100%;
+    height: auto;
+    max-height: 600px;
+    object-fit: contain;
+}
+
 #preview {
     font-size: 1.125rem;
     color: #212529;

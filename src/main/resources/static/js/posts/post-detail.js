@@ -70,9 +70,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const username = document.getElementById('signedInUsername').value;
         const domain = document.getElementById('signedInDomain').value;
         const profileImage = document.getElementById('signedInProfileImage').value;
-        console.log('userId: ' + userId);
+
         if (!userId) {
-            window.location.href = '/login';
+            alert('로그인 후 이용해 주시길 바랍니다.');
+            window.location.href = '/loginform';
         }
 
         fetch(`/api/posts/${postId}/comments`, {
@@ -299,7 +300,7 @@ function submitReply(commentId) {
         })
         .catch(error => {
             console.error('Error: ', error);
-            alert('답글 작성 중 오류가 발생했습니다.');
+            alert('로그인 후 이용해주시기 바랍니다.');
         });
 
     // 폼 숨기기 및 초기화
